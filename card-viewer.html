@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservation Pass | Fizzy's Butter Chicken</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600&family=Libre+Franklin:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      window.SUPABASE_URL = 'https://drntuchxgbxullltmhih.supabase.co';
+      window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRybnR1Y2h4Z2J4dWxsbHRtaGloIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5NTcxMTYsImV4cCI6MjEwMDUzMzExNn0.zTdr1QKl2aBTL8xd7vwgO-lLbX8UeD_af0Z6VZhLwuQ';
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <style>
+        :root {
+            --bg:#14100D; --surface:#1F1915; --ivory:#EDE6DA; --ivory-dim:#B9AF9F;
+            --gold:#C89B3C; --gold-soft:#a9823a; --ember:#8C3B2C; --line:#4A4038;
+            font-family: "Libre Franklin", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        *{ box-sizing:border-box; }
+        body {
+            margin: 0; padding: 0; background-color: var(--bg); color: var(--ivory);
+            -webkit-font-smoothing: antialiased; display: flex; flex-direction: column; min-height: 100vh;
+        }
+        h1{ font-family:"Fraunces", Georgia, serif; font-weight:500; }
+
+        .global-nav { height: 44px; background-color: rgba(0,0,0,.75); display: flex; justify-content: center;
+            align-items: center; padding: 0 20px; font-size: 12px; font-weight: 500; border-bottom:1px solid var(--line); }
+        .nav-brand { color: var(--ivory); text-decoration: none; letter-spacing: 0.02em; font-family:"Fraunces", Georgia, serif; font-weight: 500; }
+
+        .screen { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; padding: 20px; }
+        #loadScreen, #errorScreen { text-align: center; }
+
+        .spinner {
+            width: 32px; height: 32px; border: 3px solid rgba(200,155,60,.2); border-top-color: var(--gold);
+            border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .error-code { font-size: 48px; font-weight: 700; color: var(--ivory-dim); margin-bottom: 8px; font-family:"Fraunces", Georgia, serif; }
+        .error-msg { font-size: 16px; color: var(--ivory); }
+
+        #mainWrap {
+            opacity: 0; transition: opacity 0.4s ease; max-width: 600px; width: 100%;
+            margin: 40px auto; box-sizing: border-box; display: none; flex-direction: column; align-items: center;
+        }
+
+        .topbar { text-align: center; margin-bottom: 24px; }
+        .topbar-brand {
+            font-size: 11px; font-weight: 600; color: var(--ivory-dim); text-transform: uppercase;
+            letter-spacing: 0.05em; display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .verified-badge { color: var(--gold); }
+
+        /* Entry Card */
+        .entry-card {
+            background: linear-gradient(160deg, #241d17, #14100D 70%);
+            color: var(--ivory); border-radius: 4px; width: 100%; overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5); position: relative; border: 1px solid var(--line);
+        }
+
+        .card-header { padding: 24px; border-bottom: 1px solid var(--line); }
+        .restaurant-name { font-size: 13px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+        .card-title { font-size: 28px; font-weight: 500; margin: 0 0 20px 0; letter-spacing: -0.02em; font-family:"Fraunces", Georgia, serif; }
+        .card-title span { font-weight: 300; color: var(--ivory-dim); }
+
+        .meta-chips { display: flex; gap: 12px; }
+        .chip { background: rgba(200,155,60,.08); border:1px solid var(--line); padding: 8px 12px; border-radius: 2px; display: flex; flex-direction: column; gap: 2px; flex: 1; }
+        .chip-label { font-size: 10px; color: var(--ivory-dim); text-transform: uppercase; letter-spacing: 0.05em; }
+        .chip-value { font-size: 14px; font-weight: 600; }
+
+        .reg-id-block { background: var(--gold); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; }
+        .reg-id { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 16px; font-weight: 600; letter-spacing: 0.05em; color: var(--bg); }
+        .status-approved { font-size: 11px; font-weight: 700; background: rgba(20,16,13,.25); color: var(--bg); padding: 4px 10px; border-radius: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+        .card-body { display: grid; grid-template-columns: 1fr 140px; gap: 24px; padding: 24px; }
+        .guest-section { display: flex; flex-direction: column; gap: 16px; }
+        .member-row { display: flex; flex-direction: column; gap: 4px; }
+        .member-label { font-size: 11px; color: var(--ivory-dim); text-transform: uppercase; letter-spacing: 0.05em; }
+        .member-value { font-size: 15px; font-weight: 500; }
+
+        .qr-block { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+        .qr-image { width: 120px; height: 120px; background: #fff; padding: 8px; border-radius: 4px; }
+        .qr-instruction { font-size: 11px; color: var(--ivory-dim); }
+
+        .card-footer { padding: 20px 24px; border-top: 1px solid var(--line); text-align: center; }
+        .footer-notice { font-size: 11px; color: var(--ivory-dim); margin-bottom: 16px; }
+        .barcode-strip { display: flex; height: 30px; justify-content: center; opacity: 0.6; }
+        .barcode-strip span { background-color: var(--gold); margin: 0 1px; display: inline-block; height: 100%; }
+
+        .actions-wrap { display: flex; gap: 12px; margin-top: 24px; width: 100%; }
+        .btn { flex: 1; padding: 14px 24px; font-size: 13px; font-weight: 600; letter-spacing:.05em; text-transform:uppercase; border: none; cursor: pointer; transition: all 0.2s ease; text-align: center; }
+        .btn-print { background: transparent; color: var(--ivory); border: 1px solid var(--line); }
+        .btn-print:hover { border-color: var(--gold); color: var(--gold); }
+        .btn-share { background: var(--gold); color: var(--bg); }
+        .btn-share:hover { background: var(--gold-soft); }
+
+        .footer { margin-top: auto; padding: 24px; text-align: center; font-size: 12px; color: var(--ivory-dim); }
+
+        @media print {
+            body { background: white; color: #000; }
+            .global-nav, .actions-wrap, .footer, .topbar { display: none !important; }
+            #mainWrap { margin: 0; padding: 0; }
+            .entry-card { box-shadow: none; border: 2px solid #000; background: #fff; color:#000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+
+        @media (max-width: 600px) {
+            .card-body { grid-template-columns: 1fr; }
+            .qr-block { order: -1; margin-bottom: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="global-nav">
+        <a href="/" class="nav-brand">FIZZY'S BUTTER CHICKEN</a>
+    </nav>
+
+    <div id="loadScreen" class="screen">
+        <div class="spinner"></div>
+        <div>Fetching reservation details...</div>
+    </div>
+
+    <div id="errorScreen" class="screen" style="display: none;">
+        <div class="error-code">404</div>
+        <div class="error-msg" id="errorMsgText">Reservation not found.</div>
+    </div>
+
+    <div id="mainWrap" class="screen">
+        <div class="topbar">
+            <div class="topbar-brand">
+                FIZZY'S BUTTER CHICKEN / Official Reservation Pass
+                <svg class="verified-badge" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="entry-card">
+            <div class="card-header">
+                <div class="restaurant-name">Fizzy's Butter Chicken</div>
+                <h1 class="card-title">RESERVATION <span>PASS</span></h1>
+
+                <div class="meta-chips">
+                    <div class="chip">
+                        <span class="chip-label">Date</span>
+                        <span class="chip-value" id="passDate">--</span>
+                    </div>
+                    <div class="chip">
+                        <span class="chip-label">Time</span>
+                        <span class="chip-value" id="passTime">--</span>
+                    </div>
+                    <div class="chip">
+                        <span class="chip-label">Guests</span>
+                        <span class="chip-value" id="passGuests">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reg-id-block">
+                <div class="reg-id" id="passId">--</div>
+                <div class="status-approved" id="passStatus">APPROVED</div>
+            </div>
+
+            <div class="card-body">
+                <div class="guest-section">
+                    <div class="member-row">
+                        <span class="member-label">Guest Name</span>
+                        <span class="member-value" id="passName">--</span>
+                    </div>
+                    <div class="member-row">
+                        <span class="member-label">Contact</span>
+                        <span class="member-value" id="passContact">--</span>
+                    </div>
+                    <div class="member-row">
+                        <span class="member-label">Special Notes</span>
+                        <span class="member-value" id="passNotes">--</span>
+                    </div>
+                </div>
+
+                <div class="qr-block">
+                    <img id="passQr" class="qr-image" src="" alt="QR Code" />
+                    <div class="qr-instruction">Present at check-in</div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div class="footer-notice">Non-transferable • Please arrive 5 minutes early</div>
+                <div class="barcode-strip" id="barcodeStrip">
+                    <!-- generated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <div class="actions-wrap">
+            <button class="btn btn-print" onclick="window.print()">Print Pass</button>
+            <button class="btn btn-share" onclick="shareCard()">Share Pass</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2026 Fizzy's Butter Chicken. All rights reserved.
+    </div>
+
+    <script>
+        function getParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        async function init() {
+            const id = getParam('id');
+            if (!id) {
+                showError('No reservation ID provided in URL.');
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/get-card?id=${encodeURIComponent(id)}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    renderCard(data);
+                    return;
+                }
+            } catch (e) {
+                console.warn('API get-card fetch error, attempting direct client Supabase query:', e);
+            }
+
+            if (window.supabase && window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
+                try {
+                    const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+                    const { data, error } = await client
+                        .from('reservations')
+                        .select('id, name, email, phone, reservation_date, reservation_time, guests, notes, status')
+                        .eq('id', id)
+                        .single();
+
+                    if (!error && data) {
+                        renderCard(data);
+                        return;
+                    }
+                } catch (err) {
+                    console.error('Supabase fallback error:', err);
+                }
+            }
+
+            showError('Reservation not found or expired.');
+        }
+
+        function renderCard(r) {
+            document.getElementById('loadScreen').style.display = 'none';
+            document.getElementById('errorScreen').style.display = 'none';
+
+            const mainWrap = document.getElementById('mainWrap');
+            mainWrap.style.display = 'flex';
+
+            setTimeout(() => { mainWrap.style.opacity = '1'; }, 50);
+
+            document.getElementById('passDate').textContent = r.reservation_date || r.date || '--';
+            document.getElementById('passTime').textContent = r.reservation_time || r.time || '--';
+            document.getElementById('passGuests').textContent = r.guests || '--';
+
+            document.getElementById('passId').textContent = r.id || '--';
+            document.getElementById('passStatus').textContent = (r.status || 'approved').toUpperCase();
+
+            document.getElementById('passName').textContent = r.name || '--';
+            document.getElementById('passContact').textContent = r.email || r.phone || '--';
+            document.getElementById('passNotes').textContent = r.notes || 'None';
+
+            document.getElementById('passQr').src = buildQrUrl(r.id || 'DEMO');
+            buildBarcode();
+        }
+
+        function buildQrUrl(text) {
+            return `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(text)}&margin=0`;
+        }
+
+        function buildBarcode() {
+            const strip = document.getElementById('barcodeStrip');
+            strip.innerHTML = '';
+            for (let i = 0; i < 40; i++) {
+                const span = document.createElement('span');
+                const width = Math.floor(Math.random() * 4) + 1;
+                span.style.width = width + 'px';
+                if (Math.random() > 0.7) { span.style.opacity = '0'; }
+                strip.appendChild(span);
+            }
+        }
+
+        function showError(msg) {
+            document.getElementById('loadScreen').style.display = 'none';
+            const errorScreen = document.getElementById('errorScreen');
+            errorScreen.style.display = 'flex';
+            document.getElementById('errorMsgText').textContent = msg;
+        }
+
+        function shareCard() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Fizzy\'s Butter Chicken Reservation',
+                    text: 'Here is my reservation pass for Fizzy\'s Butter Chicken!',
+                    url: window.location.href
+                }).catch(err => console.log('Error sharing:', err));
+            } else {
+                navigator.clipboard.writeText(window.location.href)
+                    .then(() => alert('Link copied to clipboard!'))
+                    .catch(() => alert('Failed to copy link.'));
+            }
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>

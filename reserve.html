@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserve - Fizzy's Butter Chicken</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600&family=Libre+Franklin:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:#14100D; --surface:#1F1915; --ivory:#EDE6DA; --ivory-dim:#B9AF9F;
+            --gold:#C89B3C; --gold-soft:#a9823a; --ember:#8C3B2C; --line:#4A4038;
+            --serif:"Fraunces", Georgia, serif; --sans:"Libre Franklin", -apple-system, sans-serif;
+            --maxw: 1180px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin:0; background-color: var(--bg); color: var(--ivory);
+            font-family: var(--sans); line-height: 1.5; -webkit-font-smoothing: antialiased;
+            background-image:radial-gradient(ellipse 80% 50% at 50% 0%, rgba(200,155,60,.06), transparent 60%);
+            background-attachment: fixed;
+        }
+        a{ color:inherit; text-decoration:none; }
+        h1,h2,h3{ font-family:var(--serif); font-weight:500; }
+
+        /* Global Nav */
+        .global-nav { height: 44px; background: rgba(0,0,0,.75); position: sticky; top: 0; z-index: 9999;
+            display: flex; justify-content: center; align-items: center; backdrop-filter: blur(14px); border-bottom:1px solid var(--line); }
+        .global-nav-inner { width: 100%; max-width: var(--maxw); display: flex; justify-content: space-between; align-items: center; padding: 0 32px; }
+        .global-nav a { color: var(--ivory-dim); font-size: 12px; letter-spacing:.05em; transition: color 0.3s; }
+        .global-nav a:hover { color: var(--gold); }
+        .global-nav .brand { font-family:var(--serif); color:var(--ivory); font-weight: 500; letter-spacing: 0.05em; }
+
+        /* Sub Nav */
+        .sub-nav { height: 56px; background: rgba(31,25,21,.85); position: sticky; top: 44px; z-index: 9998;
+            backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); display: flex; justify-content: center; }
+        .sub-nav-inner { width: 100%; max-width: var(--maxw); display: flex; justify-content: space-between; align-items: center; padding: 0 32px; }
+        .sub-nav h2 { font-size: 20px; margin:0; }
+        .sub-nav .links a { color: var(--gold); font-size: 14px; margin-left: 16px; }
+        .sub-nav .links a:hover { text-decoration: underline; }
+
+        /* Hero */
+        .hero { padding: 56px 20px; text-align: center; border-bottom: 1px solid var(--line); position:relative; overflow:hidden; }
+        .hero::before{ content:""; position:absolute; inset:0; z-index:0;
+          background:radial-gradient(ellipse 90% 60% at 50% 115%, rgba(140,59,44,.3), transparent 60%),
+                     radial-gradient(ellipse 60% 40% at 60% 105%, rgba(200,155,60,.2), transparent 65%); }
+        .hero > * { position:relative; z-index:1; }
+        .hero h1 { font-size: 44px; letter-spacing: -0.005em; margin-bottom: 16px; }
+        .hero h1 span { color: var(--gold); }
+        .hero p.desc { font-size: 18px; color: var(--ivory-dim); max-width: 600px; margin: 0 auto 28px; }
+
+        .meta-chips { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 36px; }
+        .chip { background: var(--surface); border:1px solid var(--line); padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing:.08em; text-transform:uppercase; color: var(--ivory-dim); }
+
+        /* 3D Card */
+        .pedestal { perspective: 1000px; display: flex; justify-content: center; }
+        .card-3d {
+            width: 320px; height: 200px; background: linear-gradient(135deg, #241d17 0%, #14100D 100%);
+            border-radius: 18px; box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(237,230,218,0.08);
+            transform: rotateX(10deg); transition: transform 0.5s ease; position: relative; overflow: hidden;
+            border: 1px solid var(--line); color: var(--ivory); text-align: left; padding: 24px;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .card-3d:hover { transform: rotateX(5deg) rotateY(5deg) scale(1.05); }
+        .gold-chip { width: 40px; height: 30px; background: linear-gradient(135deg, #e5b252, #b8860b); border-radius: 6px; }
+        .card-title { font-size: 13px; font-weight: 600; letter-spacing: 0.14em; text-transform:uppercase; color: var(--gold); }
+        .card-guest { font-size: 17px; font-family:var(--serif); text-transform: uppercase; min-height: 22px; }
+
+        /* Configurator */
+        .configurator { max-width: 680px; margin: 56px auto; background: var(--surface); border-radius: 4px; padding: 40px; border: 1px solid var(--line); }
+
+        .step-label { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform:uppercase; color: var(--gold); margin-bottom: 24px; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+        .step-section { margin-bottom: 40px; }
+        .step-section:last-of-type { margin-bottom: 24px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .full-width { grid-column: 1 / -1; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 13px; letter-spacing:.05em; text-transform:uppercase; font-weight: 500; margin-bottom: 8px; color: var(--ivory-dim); }
+        .form-control {
+            width: 100%; padding: 12px 16px; font-size: 15px; border: 1px solid var(--line); border-radius: 2px;
+            background-color: var(--bg); font-family: inherit; color: var(--ivory); transition: border-color 0.2s;
+        }
+        .form-control:focus { outline: none; border-color: var(--gold); }
+        textarea.form-control { resize: vertical; min-height: 80px; }
+
+        .checkbox-group { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 24px; }
+        .checkbox-group input { margin-top: 4px; accent-color: var(--gold); }
+        .checkbox-group label { font-size: 13px; color: var(--ivory-dim); }
+
+        .btn-submit {
+            width: 100%; padding: 16px; background-color: var(--gold); color: var(--bg); border: none;
+            font-size: 13px; font-weight: 600; letter-spacing:.14em; text-transform:uppercase; cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .btn-submit:hover { background-color: var(--gold-soft); }
+        .btn-submit:active { transform: scale(0.98); }
+        .btn-submit:disabled { background-color: var(--line); color: var(--ivory-dim); cursor: not-allowed; transform: none; }
+
+        /* Terminal Console */
+        #logConsole {
+            background-color: #0d0b09; color: var(--gold); font-family: 'JetBrains Mono', monospace; font-size: 13px;
+            padding: 16px; border-radius: 2px; margin-top: 24px; min-height: 120px; display: none;
+            border: 1px solid var(--line); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+        }
+        #logConsole.show { display: block; }
+        .log-line { margin-bottom: 4px; }
+
+        footer { text-align: center; padding: 40px 20px; color: var(--ivory-dim); font-size: 12px; border-top: 1px solid var(--line); margin-top: 40px; }
+
+        @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <nav class="global-nav">
+        <div class="global-nav-inner">
+            <a href="/" class="brand">FIZZY'S BUTTER CHICKEN</a>
+            <div>
+                <a href="/#policies" style="margin-right: 20px;">Policies</a>
+                <a href="/admin" style="margin-right: 20px;">Admin Console</a>
+                <a href="mailto:fizzybutterchicken@outlook.com">Support</a>
+            </div>
+        </div>
+    </nav>
+
+    <nav class="sub-nav">
+        <div class="sub-nav-inner">
+            <h2>Reserve a Table</h2>
+            <div class="links">
+                <a href="/#policies">Policies</a>
+                <a href="/">← Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>RESERVE A <span>TABLE</span></h1>
+        <p class="desc">Book your dining experience at Fizzy's Butter Chicken</p>
+
+        <div class="meta-chips">
+            <div class="chip">Hours 11am–11pm</div>
+            <div class="chip">Party Size 1–9+ Guests</div>
+            <div class="chip">(705) 746-0505</div>
+        </div>
+
+        <div class="pedestal">
+            <div class="card-3d">
+                <div class="gold-chip"></div>
+                <div>
+                    <div class="card-title">Reservation Pass</div>
+                    <div class="card-guest" id="cardHolderName">Valid for Guest</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="configurator">
+        <form id="reserveForm">
+            <div class="step-section">
+                <div class="step-label">Step 01 / Guest Information</div>
+                <div class="grid-2">
+                    <div class="form-group full-width">
+                        <label for="guestName">Full Name</label>
+                        <input type="text" id="guestName" name="name" class="form-control" required placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label for="guestEmail">Email Address</label>
+                        <input type="email" id="guestEmail" name="email" class="form-control" required placeholder="john@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="guestPhone">Phone Number</label>
+                        <input type="tel" id="guestPhone" name="phone" class="form-control" required placeholder="(555) 000-0000">
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-section">
+                <div class="step-label">Step 02 / Reservation Details</div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="reserveDate">Date</label>
+                        <input type="date" id="reserveDate" name="date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reserveTime">Time</label>
+                        <select id="reserveTime" name="time" class="form-control" required>
+                            <option value="" disabled selected>Select a time</option>
+                            <option value="11:00 AM">11:00 AM</option>
+                            <option value="11:30 AM">11:30 AM</option>
+                            <option value="12:00 PM">12:00 PM</option>
+                            <option value="12:30 PM">12:30 PM</option>
+                            <option value="1:00 PM">1:00 PM</option>
+                            <option value="1:30 PM">1:30 PM</option>
+                            <option value="2:00 PM">2:00 PM</option>
+                            <option value="2:30 PM">2:30 PM</option>
+                            <option value="3:00 PM">3:00 PM</option>
+                            <option value="3:30 PM">3:30 PM</option>
+                            <option value="4:00 PM">4:00 PM</option>
+                            <option value="4:30 PM">4:30 PM</option>
+                            <option value="5:00 PM">5:00 PM</option>
+                            <option value="5:30 PM">5:30 PM</option>
+                            <option value="6:00 PM">6:00 PM</option>
+                            <option value="6:30 PM">6:30 PM</option>
+                            <option value="7:00 PM">7:00 PM</option>
+                            <option value="7:30 PM">7:30 PM</option>
+                            <option value="8:00 PM">8:00 PM</option>
+                            <option value="8:30 PM">8:30 PM</option>
+                            <option value="9:00 PM">9:00 PM</option>
+                            <option value="9:30 PM">9:30 PM</option>
+                            <option value="10:00 PM">10:00 PM</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="partySize">Party Size</label>
+                        <select id="partySize" name="guests" class="form-control" required>
+                            <option value="1">1 Guest</option>
+                            <option value="2" selected>2 Guests</option>
+                            <option value="3">3 Guests</option>
+                            <option value="4">4 Guests</option>
+                            <option value="5">5 Guests</option>
+                            <option value="6">6 Guests</option>
+                            <option value="7">7 Guests</option>
+                            <option value="8">8 Guests</option>
+                            <option value="9+">9+ Guests (Call to confirm)</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="specialNotes">Special Notes (Optional)</label>
+                        <textarea id="specialNotes" name="notes" class="form-control" placeholder="Allergies, special occasions, etc."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-section">
+                <div class="step-label">Step 03 / Confirm &amp; Submit</div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="consent" required>
+                    <label for="consent">I acknowledge the cancellation policy and confirm that the information provided is accurate.</label>
+                </div>
+                <button type="submit" id="submitBtn" class="btn-submit">Transmit Reservation</button>
+            </div>
+
+            <div id="logConsole"></div>
+        </form>
+    </div>
+
+    <footer>
+        &copy; 2026 Fizzy's Butter Chicken. All rights reserved. 36 James Street, Parry Sound, Ontario.
+    </footer>
+
+    <script>
+        const guestNameInput = document.getElementById('guestName');
+        const cardHolderName = document.getElementById('cardHolderName');
+        const reserveForm = document.getElementById('reserveForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const logConsole = document.getElementById('logConsole');
+
+        // Live update card name
+        guestNameInput.addEventListener('input', (e) => {
+            const val = e.target.value.trim().toUpperCase();
+            cardHolderName.textContent = val ? val : 'VALID FOR GUEST';
+        });
+
+        function appendLog(text) {
+            const el = document.createElement('div');
+            el.className = 'log-line';
+            el.textContent = text;
+            logConsole.appendChild(el);
+            logConsole.scrollTop = logConsole.scrollHeight;
+        }
+
+        // Form submission — posts to the real serverless endpoint, which
+        // writes the row into Supabase (see api/register.js + schema.sql)
+        reserveForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'TRANSMITTING...';
+
+            logConsole.innerHTML = '';
+            logConsole.classList.add('show');
+            appendLog('> establishing connection...');
+
+            const formData = new FormData(reserveForm);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json().catch(() => ({}));
+
+                if (!response.ok) {
+                    appendLog('> error: ' + (result.error || 'could not submit reservation.'));
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'RETRY TRANSMISSION';
+                    return;
+                }
+
+                appendLog('> reservation submitted.');
+                appendLog('> reservation id: ' + result.id);
+                appendLog('> status: pending approval');
+                appendLog('> a confirmation email is on its way.');
+
+                const passDiv = document.createElement('div');
+                passDiv.className = 'log-line';
+                passDiv.style.marginTop = '8px';
+                passDiv.innerHTML = '> pass link: <a href="https://fizzybutterchicken.vercel.app/card-viewer.html?id=' + encodeURIComponent(result.id) + '" target="_blank" style="color:var(--gold); text-decoration:underline;">View 3D Reservation Pass →</a>';
+                logConsole.appendChild(passDiv);
+
+                const inputs = reserveForm.querySelectorAll('input, select, textarea, button');
+                inputs.forEach(input => input.disabled = true);
+
+            } catch (err) {
+                appendLog('> error: ' + err.message);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'RETRY TRANSMISSION';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "fizzys-butter-chicken",
+  "version": "1.0.0",
+  "description": "Fizzy's Butter Chicken Reservation System integrated with Supabase & Vercel",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve ."
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "nodemailer": "^6.9.14"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

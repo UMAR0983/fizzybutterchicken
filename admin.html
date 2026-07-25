@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Console | Fizzy's Butter Chicken</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600&family=Libre+Franklin:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      window.SUPABASE_URL = 'https://drntuchxgbxullltmhih.supabase.co';
+      window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRybnR1Y2h4Z2J4dWxsbHRtaGloIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5NTcxMTYsImV4cCI6MjEwMDUzMzExNn0.zTdr1QKl2aBTL8xd7vwgO-lLbX8UeD_af0Z6VZhLwuQ';
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <style>
+        :root {
+            --bg:#14100D; --surface:#1F1915; --ivory:#EDE6DA; --ivory-dim:#B9AF9F;
+            --gold:#C89B3C; --gold-soft:#a9823a; --ember:#8C3B2C; --line:#4A4038;
+            --green-success:#8fae6b; --amber-warn:#C89B3C; --red-breach:#c2544a;
+            --red-breach-bg: rgba(194, 84, 74, 0.1); --red-breach-border: rgba(194, 84, 74, 0.35);
+            font-family: "Libre Franklin", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        *{ box-sizing:border-box; }
+        body {
+            margin: 0; padding: 0; background-color: var(--bg); color: var(--ivory);
+            -webkit-font-smoothing: antialiased;
+        }
+        h1,h2{ font-family:"Fraunces", Georgia, serif; font-weight:500; }
+
+        /* Global Nav */
+        .global-nav { height: 44px; background-color: rgba(0,0,0,.75); display: flex; justify-content: space-between;
+            align-items: center; padding: 0 24px; font-size: 12px; font-weight: 500; border-bottom:1px solid var(--line); }
+        .global-nav a { color: var(--ivory-dim); text-decoration: none; letter-spacing: -0.01em; transition:color .2s ease; }
+        .global-nav a:hover { color: var(--gold); }
+        .nav-brand { font-family:"Fraunces", Georgia, serif; color:var(--ivory); font-weight: 500; letter-spacing: 0.02em; }
+
+        .admin-wrap { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        .header-section { margin-bottom: 32px; }
+        .header-title { font-size: 32px; letter-spacing: -0.015em; margin: 0 0 8px 0; }
+        .header-title span { color: var(--ivory-dim); font-weight: 400; }
+        .header-subtitle { font-size: 14px; color: var(--ivory-dim); margin: 0; }
+
+        /* Auth Box */
+        .auth-box {
+            background: var(--surface); border: 1px solid var(--line); padding: 24px;
+            display: flex; gap: 12px; align-items: center; margin-bottom: 32px;
+        }
+        .auth-box input {
+            padding: 10px 16px; border: 1px solid var(--line); background:var(--bg); color:var(--ivory);
+            font-size: 14px; outline: none; width: 280px; transition: border-color 0.2s ease;
+        }
+        .auth-box input:focus { border-color: var(--gold); }
+
+        button { padding: 10px 20px; font-size: 13px; font-weight: 600; letter-spacing:.04em; cursor: pointer; border: none; transition: all 0.2s ease; }
+        .btn-primary { background-color: var(--gold); color: var(--bg); }
+        .btn-primary:hover { background-color: var(--gold-soft); }
+
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; display: none; }
+        .stat-card { background: var(--surface); border: 1px solid var(--line); padding: 20px; }
+        .stat-value { font-size: 28px; font-weight: 700; margin-bottom: 4px; font-family:"Fraunces", Georgia, serif; }
+        .stat-label { font-size: 12px; color: var(--ivory-dim); font-weight: 500; text-transform:uppercase; letter-spacing:.05em; }
+
+        /* Console Body */
+        .console-body { display: grid; grid-template-columns: 1fr 440px; gap: 24px; display: none; }
+        .panel { background: var(--surface); border: 1px solid var(--line); overflow: hidden; display: flex; flex-direction: column; }
+        .left-panel { height: 660px; }
+        .panel-header { padding: 16px 20px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; background: #241d17; }
+        .panel-title { font-size: 15px; font-weight: 600; margin: 0; font-family:"Fraunces", Georgia, serif; }
+        .search-input { padding: 6px 12px; border: 1px solid var(--line); background:var(--bg); color:var(--ivory); font-size: 13px; width: 220px; }
+
+        .table-wrap { overflow-y: auto; flex: 1; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 14px 20px; border-bottom: 1px solid var(--line); font-size: 13px; }
+        th { font-weight: 500; color: var(--ivory-dim); position: sticky; top: 0; background: #241d17; z-index: 10; text-transform:uppercase; letter-spacing:.05em; font-size:11px; }
+        tr { cursor: pointer; transition: background 0.2s ease; }
+        tr:hover { background: rgba(200,155,60,.06); }
+        tr.selected { background: rgba(200,155,60,.12); }
+        .col-id { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; color: var(--gold); font-weight: 500; font-size: 12px; }
+
+        .badge { display: inline-block; padding: 4px 8px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+        .badge.pending { background: rgba(200,155,60,.12); color: var(--amber-warn); }
+        .badge.approved { background: rgba(143,174,107,.12); color: var(--green-success); }
+        .badge.rejected { background: var(--red-breach-bg); color: var(--red-breach); }
+        .badge.checked_in { background: rgba(200,155,60,.2); color: var(--gold); }
+
+        /* Right Panel */
+        .right-panel { height: 660px; }
+        .placeholder-msg { display: flex; align-items: center; justify-content: center; height: 100%; color: var(--ivory-dim); font-size: 14px; }
+        #detailsContent { display: none; flex-direction: column; height: 100%; }
+        .details-header { padding: 24px; border-bottom: 1px solid var(--line); text-align: center; }
+        .details-id { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 18px; font-weight: 600; margin-bottom: 12px; color:var(--gold); }
+        .details-time { font-size: 13px; color: var(--ivory-dim); margin-top: 12px; }
+        .guest-overview { padding: 24px; flex: 1; overflow-y: auto; }
+        .meta-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        .meta-item { display: flex; flex-direction: column; gap: 4px; }
+        .meta-label { font-size: 11px; color: var(--ivory-dim); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; }
+        .meta-value { font-size: 14px; font-weight: 500; color: var(--ivory); }
+        .actions-box { padding: 20px 24px; border-top: 1px solid var(--line); background: #241d17; display: flex; gap: 12px; }
+        .btn-approve { background-color: var(--gold); color: var(--bg); flex: 1; }
+        .btn-approve:hover { background-color: var(--gold-soft); }
+        .btn-reject { background-color: transparent; color: var(--red-breach); border: 1px solid var(--red-breach-border); flex: 1; }
+        .btn-reject:hover { background-color: var(--red-breach-bg); }
+        .btn-card { background-color: transparent; color: var(--gold); border: 1px solid var(--line); flex: 1; }
+        .btn-card:hover { border-color: var(--gold); }
+    </style>
+</head>
+<body>
+
+    <nav class="global-nav">
+        <a href="/" class="nav-brand">FIZZY'S BUTTER CHICKEN</a>
+        <a href="mailto:fizzybutterchicken@outlook.com">Support</a>
+    </nav>
+
+    <div class="admin-wrap">
+        <div class="header-section">
+            <h1 class="header-title">Admin <span>Console</span></h1>
+            <p class="header-subtitle">Fizzy's Reservation Management System</p>
+        </div>
+
+        <div class="auth-box" id="authBox">
+            <input type="password" id="adminSecret" placeholder="Enter Admin Secret..." onkeydown="if(event.key === 'Enter') loadDashboard()">
+            <button class="btn-primary" onclick="loadDashboard()">Connect</button>
+        </div>
+
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-value" id="statTotal">0</div>
+                <div class="stat-label">Total Reservations</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statPending">0</div>
+                <div class="stat-label">Pending Review</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statApproved">0</div>
+                <div class="stat-label">Approved</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statRejected">0</div>
+                <div class="stat-label">Rejected</div>
+            </div>
+        </div>
+
+        <div class="console-body" id="consoleBody">
+            <div class="panel left-panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">Reservations</h2>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search ID, name, email..." oninput="renderList()">
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Guest Name</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Rows rendered via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel right-panel">
+                <div id="placeholderMsg" class="placeholder-msg">
+                    Select a reservation to view details
+                </div>
+
+                <div id="detailsContent">
+                    <div class="details-header">
+                        <div class="details-id" id="detailId">--</div>
+                        <div id="detailBadge" class="badge">--</div>
+                        <div class="details-time" id="detailCreated">--</div>
+                    </div>
+
+                    <div class="guest-overview">
+                        <div class="meta-grid">
+                            <div class="meta-item">
+                                <span class="meta-label">Guest Name</span>
+                                <span class="meta-value" id="detailName">--</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Email Address</span>
+                                <span class="meta-value" id="detailEmail">--</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Phone</span>
+                                <span class="meta-value" id="detailPhone">--</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Reservation Date</span>
+                                <span class="meta-value" id="detailDate">--</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Time</span>
+                                <span class="meta-value" id="detailTime">--</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Party Size</span>
+                                <span class="meta-value" id="detailParty">--</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Special Notes</span>
+                                <span class="meta-value" id="detailNotes">--</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Remarks</span>
+                                <span class="meta-value" id="detailRemarks">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="actions-box" id="actionsBox">
+                        <button class="btn-reject" onclick="rejectRecord()">Reject</button>
+                        <button class="btn-approve" onclick="approveRecord()">Approve</button>
+                    </div>
+                    <div class="actions-box" id="cardActionsBox" style="border-top:none; padding-top:0;">
+                        <button class="btn-card" onclick="viewCard()">View Reservation Pass</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allRecords = [];
+        let currentSecret = '';
+        let selectedRecord = null;
+
+        function escHtml(unsafe) {
+            if (unsafe == null) return '';
+            return String(unsafe)
+                 .replace(/&/g, "&amp;")
+                 .replace(/</g, "&lt;")
+                 .replace(/>/g, "&gt;")
+                 .replace(/"/g, "&quot;")
+                 .replace(/'/g, "&#039;");
+        }
+
+        async function loadDashboard() {
+            const secret = document.getElementById('adminSecret').value.trim();
+            if (!secret) return alert('Please enter the admin secret.');
+
+            let loaded = false;
+            try {
+                const response = await fetch('/api/admin?action=list', {
+                    headers: { 'Authorization': 'Bearer ' + secret }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    allRecords = data.records || [];
+                    loaded = true;
+                } else if (response.status === 401 || response.status === 403) {
+                    alert('Unauthorized. Invalid secret.');
+                    return;
+                }
+            } catch (error) {
+                console.warn('API /api/admin fetch error, trying client Supabase fallback:', error);
+            }
+
+            if (!loaded && window.supabase && window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
+                try {
+                    const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+                    const { data: records, error } = await client
+                        .from('reservations')
+                        .select('*')
+                        .order('created_at', { ascending: false });
+
+                    if (!error && records) {
+                        allRecords = records;
+                        loaded = true;
+                    }
+                } catch (e) {
+                    console.error('Supabase fallback error:', e);
+                }
+            }
+
+            if (!loaded) {
+                return alert('Could not connect to database or serverless API. Please check your network or environment setup.');
+            }
+
+            currentSecret = secret;
+            document.getElementById('authBox').style.display = 'none';
+            document.getElementById('statsGrid').style.display = 'grid';
+            document.getElementById('consoleBody').style.display = 'grid';
+
+            calculateStats();
+            renderList();
+        }
+
+        function calculateStats() {
+            const total = allRecords.length;
+            const pending = allRecords.filter(r => r.status === 'pending').length;
+            const approved = allRecords.filter(r => r.status === 'approved').length;
+            const rejected = allRecords.filter(r => r.status === 'rejected').length;
+
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statPending').textContent = pending;
+            document.getElementById('statApproved').textContent = approved;
+            document.getElementById('statRejected').textContent = rejected;
+        }
+
+        function renderList() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const tbody = document.getElementById('tableBody');
+
+            tbody.innerHTML = '';
+
+            const filtered = allRecords.filter(r => {
+                const idMatch = (r.id || '').toLowerCase().includes(query);
+                const nameMatch = (r.name || '').toLowerCase().includes(query);
+                const emailMatch = (r.email || '').toLowerCase().includes(query);
+                return idMatch || nameMatch || emailMatch;
+            });
+
+            filtered.forEach(record => {
+                const tr = document.createElement('tr');
+                if (selectedRecord && selectedRecord.id === record.id) {
+                    tr.classList.add('selected');
+                }
+
+                tr.onclick = () => inspectRecord(record, tr);
+
+                tr.innerHTML = `
+                    <td class="col-id">${escHtml(record.id)}</td>
+                    <td>${escHtml(record.name)}</td>
+                    <td>${escHtml(record.reservation_date)}</td>
+                    <td><span class="badge ${escHtml(record.status)}">${escHtml(record.status)}</span></td>
+                `;
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        function inspectRecord(record, trElement) {
+            selectedRecord = record;
+
+            document.querySelectorAll('#tableBody tr').forEach(tr => tr.classList.remove('selected'));
+            if (trElement) trElement.classList.add('selected');
+            else renderList();
+
+            document.getElementById('placeholderMsg').style.display = 'none';
+            document.getElementById('detailsContent').style.display = 'flex';
+
+            document.getElementById('detailId').textContent = record.id;
+
+            const badge = document.getElementById('detailBadge');
+            badge.textContent = record.status;
+            badge.className = `badge ${record.status}`;
+
+            document.getElementById('detailCreated').textContent = `Created: ${new Date(record.created_at || Date.now()).toLocaleString()}`;
+
+            document.getElementById('detailName').textContent = record.name || '--';
+            document.getElementById('detailEmail').textContent = record.email || '--';
+            document.getElementById('detailPhone').textContent = record.phone || '--';
+            document.getElementById('detailDate').textContent = record.reservation_date || '--';
+            document.getElementById('detailTime').textContent = record.reservation_time || '--';
+            document.getElementById('detailParty').textContent = record.guests ? `${record.guests} guests` : '--';
+            document.getElementById('detailNotes').textContent = record.notes || 'None';
+            document.getElementById('detailRemarks').textContent = record.remarks || 'None';
+
+            const actionsBox = document.getElementById('actionsBox');
+            actionsBox.style.display = record.status === 'pending' ? 'flex' : 'none';
+        }
+
+        async function approveRecord() {
+            if (!selectedRecord) return;
+
+            const adminName = prompt("Enter your name for the approval record:");
+            if (!adminName) return;
+
+            try {
+                const res = await fetch('/api/admin?action=approve', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + currentSecret
+                    },
+                    body: JSON.stringify({ id: selectedRecord.id, adminName })
+                });
+
+                if (res.ok) {
+                    selectedRecord.status = 'approved';
+                    selectedRecord.verified_by = adminName;
+                    updateUI();
+                } else {
+                    const err = await res.json().catch(() => ({}));
+                    alert('Failed to approve: ' + (err.error || res.status));
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Network error while approving.');
+            }
+        }
+
+        async function rejectRecord() {
+            if (!selectedRecord) return;
+
+            const remarks = prompt("Enter reason for rejection:");
+            if (remarks === null) return;
+
+            try {
+                const res = await fetch('/api/admin?action=reject', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + currentSecret
+                    },
+                    body: JSON.stringify({ id: selectedRecord.id, remarks })
+                });
+
+                if (res.ok) {
+                    selectedRecord.status = 'rejected';
+                    selectedRecord.remarks = remarks;
+                    updateUI();
+                } else {
+                    const err = await res.json().catch(() => ({}));
+                    alert('Failed to reject: ' + (err.error || res.status));
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Network error while rejecting.');
+            }
+        }
+
+        function viewCard() {
+            if (!selectedRecord) return;
+            window.open('/card-viewer?id=' + encodeURIComponent(selectedRecord.id), '_blank');
+        }
+
+        function updateUI() {
+            calculateStats();
+            inspectRecord(selectedRecord);
+        }
+    </script>
+</body>
+</html>
