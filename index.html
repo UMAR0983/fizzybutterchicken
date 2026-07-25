@@ -218,14 +218,17 @@ section{ position:relative; }
 .menu-cat-head h3{ font-size:1.6rem; white-space:nowrap; }
 .menu-cat-head .rule{ flex:1; height:1px; background:var(--line); }
 
-/* ---------- Form ---------- */
-.form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
-.form-grid .full{ grid-column:1 / -1; }
-label{ display:block; font-size:.75rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ivory-dim); margin-bottom:8px; }
-input, select, textarea{ width:100%; background:var(--bg); border:1px solid var(--line); color:var(--ivory); padding:12px 14px; font-family:var(--sans); font-size:.95rem; }
-input:focus, select:focus, textarea:focus{ border-color:var(--gold); }
-textarea{ resize:vertical; min-height:90px; }
-.field{ margin-bottom:20px; }
+/* ---------- Contact & Reservation Layout ---------- */
+.contact-grid { display:grid; grid-template-columns:1.3fr 1fr; gap:64px; align-items:start; }
+.location-info-card { background:var(--surface); border:1px solid var(--line); padding:20px; border-radius:6px; margin-bottom:20px; transition:border-color .2s; }
+.location-info-card:hover { border-color:var(--gold); }
+@media (max-width:860px) {
+  .contact-grid { grid-template-columns:1fr !important; gap:36px !important; }
+  .location-info-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
+}
+@media (max-width:540px) {
+  .location-info-grid { grid-template-columns:1fr; }
+}
 #reservation-confirmation{ border:1px solid var(--gold); padding:28px; background:rgba(200,155,60,.06); }
 #reservation-confirmation h3{ color:var(--gold); font-size:1.3rem; }
 
@@ -367,27 +370,28 @@ footer .wrap{
 #mobile-view{ display:none; }
 
 @media (max-width:860px) {
-  .wrap { padding-left: 18px; padding-right: 18px; }
-  .site-header { padding: 14px 0; }
-  .site-header .wrap { flex-wrap: wrap; gap: 14px; }
-  .brand { font-size: 1.15rem; }
-  .hero { padding: 140px 0 50px; }
-  .hero .wrap { padding: 0; }
-  .hero h1 { font-size: clamp(2rem, 8vw, 2.8rem); }
-  .hero p.lead { font-size: 1rem; max-width: none; }
+  .wrap { padding-left: 20px; padding-right: 20px; }
+  .site-header { padding: 12px 0; }
+  .site-header .wrap { flex-wrap: wrap; gap: 12px; }
+  .brand { font-size: 1.1rem; }
+  .hero { padding: 120px 0 40px; }
+  .hero .wrap { padding: 0 16px; }
+  .hero h1 { font-size: clamp(1.9rem, 7vw, 2.6rem); word-break: break-word; }
+  .hero p.lead { font-size: .95rem; max-width: none; }
   .hero div[style*="display:flex"] { flex-direction: column; gap: 12px; }
-  .hero .btn { width: 100%; justify-content: center; }
-  .hero .btn + .btn { margin-top: 12px; }
+  .hero .btn { width: 100%; justify-content: center; text-align: center; box-sizing: border-box; }
+  .hero .btn + .btn { margin-top: 8px; }
 
-  .menu-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .menu-item { flex-direction: column; align-items: flex-start; gap: 8px; padding: 14px 0; }
   .menu-item .leader { display: none; }
-  .menu-item .price { margin-top: 0; }
+  .menu-item .price { margin-top: 0; font-size: 1rem; font-weight: 600; }
 
   .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; gap: 24px; }
-  .form-grid { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; gap: 16px; }
   .form-grid .full { grid-column: auto; }
-  .reservation-form button { width: 100%; }
-  .art-frame { min-height: 240px; }
+  .reservation-form button { width: 100%; min-height: 48px; }
+  .reservation-form input, .reservation-form select, .reservation-form textarea { width: 100%; min-height: 44px; font-size: 16px; }
+  .art-frame { min-height: 220px; width: 100%; }
 }
 
 @media (max-width:660px){
@@ -1427,9 +1431,8 @@ Whether you're sharing dinner with family, celebrating with friends, or simply c
 
 <hr class="divider">
 
-<!-- ============ CONTACT / RESERVATION / FIND US ============ -->
 <section class="section" id="contact">
-  <div class="wrap" style="display:grid; grid-template-columns:1.3fr 1fr; gap:64px; align-items:start;">
+  <div class="wrap contact-grid">
     <div>
       <span class="eyebrow">Reservations</span>
       <h2 style="font-size:1.7rem; margin-bottom:28px;">Request a table</h2>
@@ -1491,48 +1494,46 @@ Whether you're sharing dinner with family, celebrating with friends, or simply c
       <span class="eyebrow">Visit Us</span>
       <h2 style="font-size:1.7rem; margin-bottom:28px;">Fizzy's Butter Chicken</h2>
 
-      <div style="margin-bottom:28px;">
-        <h4 style="font-size:.75rem; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:8px;">
-          Address
-        </h4>
+      <div class="location-info-grid">
+        <div class="location-info-card">
+          <h4 style="font-size:.75rem; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:8px;">
+            Address
+          </h4>
+          <p style="color:var(--ivory-dim); margin:0;">
+            Fizzy's Butter Chicken<br>
+            36 James Street<br>
+            Parry Sound, Ontario, Canada
+          </p>
+        </div>
 
-        <p style="color:var(--ivory-dim); margin:0;">
-          Fizzy's Butter Chicken<br>
-          36 James Street<br>
-          Parry Sound, Ontario, Canada
-        </p>
-      </div>
+        <div class="location-info-card">
+          <h4 style="font-size:.75rem; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:8px;">
+            Phone
+          </h4>
+          <p style="color:var(--ivory-dim); margin:0;">
+            <a href="tel:+17057460505" style="color:inherit;">(705) 746-0505</a>
+          </p>
+        </div>
 
-      <div style="margin-bottom:28px;">
-        <h4 style="font-size:.75rem; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:8px;">
-          Phone
-        </h4>
+        <div class="location-info-card">
+          <h4 style="font-size:.75rem; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:8px;">
+            Email
+          </h4>
+          <p style="color:var(--ivory-dim); margin:0;">
+            <a href="mailto:fizzybutterchicken@outlook.com" style="color:inherit;">fizzybutterchicken@outlook.com</a>
+          </p>
+        </div>
 
-        <p style="color:var(--ivory-dim); margin:0;">
-          (705) 746-0505
-        </p>
-      </div>
-
-      <div style="margin-bottom:28px;">
-        <h4 style="font-size:.75rem; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:8px;">
-          Email
-        </h4>
-
-        <p style="color:var(--ivory-dim); margin:0;">
-          fizzybutterchicken@outlook.com
-        </p>
-      </div>
-
-      <div style="margin-bottom:28px;">
-        <h4 style="font-size:.75rem; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:8px;">
-          Opening Hours
-        </h4>
-
-        <p style="color:var(--ivory-dim); margin:0;">
-          Monday – Sunday<br>
-          Lunch: 11:30 AM – 3:00 PM<br>
-          Dinner: 5:00 PM – 10:00 PM
-        </p>
+        <div class="location-info-card">
+          <h4 style="font-size:.75rem; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:8px;">
+            Opening Hours
+          </h4>
+          <p style="color:var(--ivory-dim); margin:0;">
+            Monday – Sunday<br>
+            Lunch: 11:30 AM – 3:00 PM<br>
+            Dinner: 5:00 PM – 10:00 PM
+          </p>
+        </div>
       </div>
 
       <div class="art-frame" style="aspect-ratio:4/3;overflow:hidden;border:1px solid var(--line);border-radius:8px;">
