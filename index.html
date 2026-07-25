@@ -358,25 +358,27 @@ footer .wrap{
 .play-badge svg{ width:46px; height:46px; opacity:.85; }
 
 /* ==================================================================
-   DESKTOP / MOBILE VIEW SWITCH
-   ------------------------------------------------------------------
-   #desktop-view is the ORIGINAL layout, completely untouched.
-   #mobile-view is a JS-generated clone of it (see the script near
-   the bottom of this file) with a handful of mobile-only tweaks
-   layered on top via the .mobile-mode class below. Only one of the
-   two is ever visible, based on screen width.
+   RESPONSIVE DESIGN (UNIFIED SINGLE DOM)
    ================================================================== */
-#desktop-view{ display:block; }
-#mobile-view{ display:none; }
-
 @media (max-width:860px) {
-  .wrap { padding-left: 20px; padding-right: 20px; }
+  html, body {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+  .wrap {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    box-sizing: border-box !important;
+  }
   .site-header { padding: 12px 0; }
   .site-header .wrap { flex-wrap: wrap; gap: 12px; }
   .brand { font-size: 1.1rem; }
-  .hero { padding: 120px 0 40px; }
+  .hero { padding: 100px 0 40px; }
   .hero .wrap { padding: 0 16px; }
-  .hero h1 { font-size: clamp(1.9rem, 7vw, 2.6rem); word-break: break-word; }
+  .hero h1 { font-size: clamp(1.8rem, 7.5vw, 2.5rem); word-break: break-word; }
   .hero p.lead { font-size: .95rem; max-width: none; }
   .hero div[style*="display:flex"] { flex-direction: column; gap: 12px; }
   .hero .btn { width: 100%; justify-content: center; text-align: center; box-sizing: border-box; }
@@ -386,36 +388,25 @@ footer .wrap{
   .menu-item .leader { display: none; }
   .menu-item .price { margin-top: 0; font-size: 1rem; font-weight: 600; }
 
-  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; gap: 24px; }
-  .form-grid { grid-template-columns: 1fr; gap: 16px; }
-  .form-grid .full { grid-column: auto; }
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr !important; gap: 24px !important; }
+  .contact-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+  .form-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
+  .form-grid .full { grid-column: auto !important; }
   .reservation-form button { width: 100%; min-height: 48px; }
   .reservation-form input, .reservation-form select, .reservation-form textarea { width: 100%; min-height: 44px; font-size: 16px; }
   .art-frame { min-height: 220px; width: 100%; }
-}
 
-@media (max-width:660px){
-  #desktop-view{ display:none; }
-  #mobile-view{ display:block; }
-
-  #mobile-view .wrap { padding: 0 16px; }
-  #mobile-view .hero { padding: 90px 0 60px; }
-  #mobile-view .hero h1 { font-size: clamp(1.7rem, 9vw, 2.1rem); }
-  #mobile-view .hero p.lead { font-size: .98rem; line-height: 1.5; }
-  #mobile-view .section { padding: 40px 0; }
-  #mobile-view .section-tight { padding: 32px 0; }
-
-  #mobile-view .menu-list {
+  .menu-list {
     margin-bottom: 14px;
     border-bottom: 1px solid var(--line);
   }
-  #mobile-view .menu-cat-head {
+  .menu-cat-head {
     cursor: pointer;
     padding: 14px 0;
     position: relative;
   }
-  #mobile-view .menu-cat-head .rule { display: none; }
-  #mobile-view .menu-cat-head::after {
+  .menu-cat-head .rule { display: none; }
+  .menu-cat-head::after {
     content: "+";
     position: absolute;
     right: 0;
@@ -424,16 +415,16 @@ footer .wrap{
     font-size: 1.4rem;
     color: var(--gold);
   }
-  #mobile-view .menu-list.open .menu-cat-head::after { content: "–"; }
+  .menu-list.open .menu-cat-head::after { content: "–"; }
 
-  #mobile-view .menu-items {
+  .menu-items {
     max-height: 0;
     overflow: hidden;
     transition: max-height .35s ease;
   }
-  #mobile-view .menu-list.open .menu-items { max-height: 2000px; }
+  .menu-list.open .menu-items { max-height: 2000px; }
 
-  #mobile-view .mobile-stickybar {
+  .mobile-stickybar {
     position: fixed;
     left: 0;
     right: 0;
@@ -449,7 +440,7 @@ footer .wrap{
     padding: 6px 10px calc(6px + env(safe-area-inset-bottom, 0px));
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.6);
   }
-  #mobile-view .mobile-stickybar a {
+  .mobile-stickybar a {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -466,12 +457,12 @@ footer .wrap{
     transition: all 0.2s ease;
     text-decoration: none;
   }
-  #mobile-view .mobile-stickybar a:active,
-  #mobile-view .mobile-stickybar a:hover {
+  .mobile-stickybar a:active,
+  .mobile-stickybar a:hover {
     color: var(--ivory);
     background: rgba(255, 255, 255, 0.06);
   }
-  #mobile-view .mobile-stickybar a svg {
+  .mobile-stickybar a svg {
     width: 18px;
     height: 18px;
     stroke: currentColor;
@@ -480,7 +471,7 @@ footer .wrap{
     stroke-linecap: round;
     stroke-linejoin: round;
   }
-  #mobile-view .mobile-stickybar a.stickybar-reserve {
+  .mobile-stickybar a.stickybar-reserve {
     flex: 1.5;
     flex-direction: row;
     gap: 6px;
@@ -491,21 +482,23 @@ footer .wrap{
     padding: 10px 14px;
     box-shadow: 0 3px 12px rgba(200, 155, 60, 0.35);
   }
-  #mobile-view .mobile-stickybar a.stickybar-reserve:active,
-  #mobile-view .mobile-stickybar a.stickybar-reserve:hover {
+  .mobile-stickybar a.stickybar-reserve:active,
+  .mobile-stickybar a.stickybar-reserve:hover {
     background: var(--gold);
     color: var(--bg);
   }
 
-  #mobile-view .hero { padding-bottom: 100px; }
-  #mobile-view { padding-bottom: 80px; }
-  #mobile-view .nav-cta { display: none; }
+  body { padding-bottom: 80px; }
+  .nav-cta { display: none; }
+}
+@media (min-width: 861px) {
+  .mobile-stickybar { display: none !important; }
 }
 </style>
 </head>
 <body>
 
-<div id="desktop-view" class="site-view">
+
 
 <header class="site-header" id="site-header">
     <div class="wrap">
@@ -1577,6 +1570,7 @@ Whether you're sharing dinner with family, celebrating with friends, or simply c
                 </ul>
             </div>
 
+
             <div>
                 <h4>Contact</h4>
                 <ul class="footer-contact-list">
@@ -1594,7 +1588,7 @@ Whether you're sharing dinner with family, celebrating with friends, or simply c
                     </li>
                     <li>
                         <strong>Hours</strong>
-                        Monday – Sunday, 11:30 AM – 10:00 PM
+                        Monday &ndash; Sunday, 11:30 AM &ndash; 10:00 PM
                     </li>
                 </ul>
             </div>
@@ -1602,239 +1596,154 @@ Whether you're sharing dinner with family, celebrating with friends, or simply c
         </div>
 
         <div class="footer-bottom">
-            <span>© 2026 Fizzy's Butter Chicken. All rights reserved.</span>
-            <span>Authentic Pakistani &amp; Indian Cuisine &nbsp;•&nbsp; Parry Sound, Ontario</span>
+            <span>&copy; 2026 Fizzy&apos;s Butter Chicken. All rights reserved.</span>
+            <span>Authentic Pakistani &amp; Indian Cuisine &nbsp;&bull;&nbsp; Parry Sound, Ontario</span>
         </div>
 
     </div>
 </footer>
 
-</div><!-- /desktop-view -->
-
-<div id="mobile-view" class="site-view" aria-hidden="true"></div><!-- populated by JS clone of desktop-view -->
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-  // ==================================================================
-  // DESKTOP + MOBILE, ONE FILE
-  // ------------------------------------------------------------------
-  // #desktop-view holds the original markup, completely untouched.
-  // Below, we clone it once into #mobile-view, give every id inside
-  // the clone a "-mobile" suffix (so the two copies never collide),
-  // fix up the in-page links (#menu, #about, etc.) to match, add a
-  // couple of mobile-only conveniences (accordion menu + sticky
-  // call/reserve bar), then wire up interactivity for BOTH copies
-  // using the shared initSiteView() function below. CSS in <style>
-  // shows only one copy at a time based on screen width.
-  // ==================================================================
-
-  var desktopView = document.getElementById('desktop-view');
-  var mobileView = document.getElementById('mobile-view');
-
-  // ---- 1. Build the mobile copy ----
-  if (desktopView && mobileView) {
-    mobileView.innerHTML = desktopView.innerHTML;
-
-    // Give every id in the mobile copy a unique "-mobile" suffix.
-    mobileView.querySelectorAll('[id]').forEach(function (el) {
-      el.id = el.id + '-mobile';
-    });
-
-    // Point in-page anchor links (nav, buttons, footer) at the
-    // matching mobile-suffixed sections instead of the desktop ones.
-    var anchorIds = ['home', 'menu', 'about', 'gallery', 'contact', 'reservation-form'];
-    mobileView.querySelectorAll('a[href*="#"]').forEach(function (a) {
-      var href = a.getAttribute('href');
-      var hashIndex = href.indexOf('#');
-      var fragment = href.slice(hashIndex + 1);
-      if (anchorIds.indexOf(fragment) !== -1) {
-        a.setAttribute('href', '#' + fragment + '-mobile');
-      }
-    });
-    // Reconnect <label for="..."> in the mobile reservation form.
-    mobileView.querySelectorAll('label[for]').forEach(function (label) {
-      label.setAttribute('for', label.getAttribute('for') + '-mobile');
-    });
-
-    // ---- 2. Turn each mobile menu category into a tap-to-expand accordion ----
-    mobileView.querySelectorAll('.menu-list').forEach(function (list) {
+  // ---- 1. Mobile Menu Category Accordion ----
+  if (window.innerWidth <= 860) {
+    document.querySelectorAll('.menu-list').forEach(function (list) {
       var head = list.querySelector('.menu-cat-head');
       if (!head) return;
       var itemsWrap = document.createElement('div');
       itemsWrap.className = 'menu-items';
-      // Move every node after the head (menu items + the notes
-      // paragraph on the last list) into the collapsible wrapper.
       var node = head.nextSibling;
       var toMove = [];
-      while (node) {
-        toMove.push(node);
-        node = node.nextSibling;
-      }
+      while (node) { toMove.push(node); node = node.nextSibling; }
       toMove.forEach(function (n) { itemsWrap.appendChild(n); });
       list.appendChild(itemsWrap);
-
-      head.addEventListener('click', function () {
-        list.classList.toggle('open');
-      });
+      head.addEventListener('click', function () { list.classList.toggle('open'); });
     });
-    // Open the first category by default so mobile isn't empty on load.
-    var firstList = mobileView.querySelector('.menu-list');
+    var firstList = document.querySelector('.menu-list');
     if (firstList) firstList.classList.add('open');
-
-    // ---- 3. Sticky Call / Reserve / Nav bar for thumb-reach on mobile ----
-    var stickyBar = document.createElement('div');
-    stickyBar.className = 'mobile-stickybar';
-    stickyBar.innerHTML =
-      '<a href="tel:+17057460505">' +
-        '<svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>' +
-        '<span>Call</span>' +
-      '</a>' +
-      '<a href="#menu-mobile">' +
-        '<svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>' +
-        '<span>Menu</span>' +
-      '</a>' +
-      '<a href="#contact-mobile">' +
-        '<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>' +
-        '<span>Location</span>' +
-      '</a>' +
-      '<a href="#reservation-form-mobile" class="stickybar-reserve">' +
-        '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>' +
-        '<span>Reserve</span>' +
-      '</a>';
-    mobileView.appendChild(stickyBar);
   }
 
-  // ---- 4. Shared interactivity, run once per view ----
-  function initSiteView(root) {
-    if (!root) return;
+  // ---- 2. Mobile Sticky Bottom Nav Bar ----
+  var stickyBar = document.createElement('div');
+  stickyBar.className = 'mobile-stickybar';
+  stickyBar.innerHTML =
+    '<a href="tel:+17057460505">' +
+      '<svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>' +
+      '<span>Call</span></a>' +
+    '<a href="#menu">' +
+      '<svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>' +
+      '<span>Menu</span></a>' +
+    '<a href="#contact">' +
+      '<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>' +
+      '<span>Location</span></a>' +
+    '<a href="#reservation-form" class="stickybar-reserve">' +
+      '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>' +
+      '<span>Reserve</span></a>';
+  document.body.appendChild(stickyBar);
 
-    // Header background after scroll (shared scroll listener; each
-    // view's header only reacts while that view is the visible one).
-    var header = root.querySelector('.site-header');
-    if (header) {
-      var onScroll = function () {
-        if (window.scrollY > 40) header.classList.add('scrolled');
-        else header.classList.remove('scrolled');
-      };
-      window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
-    }
+  // ---- 3. Page Interactivity ----
+  initSiteView(document);
+});
 
-    // Nav toggle (hamburger) — only really used on narrow desktop
-    // widths for #desktop-view; harmless on #mobile-view too.
-    var toggle = root.querySelector('.nav-toggle');
-    var links = root.querySelector('.nav-links');
-    if (toggle && links) {
-      toggle.addEventListener('click', function () {
-        var open = links.classList.toggle('nav-open');
-        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+function initSiteView(root) {
+  if (!root) return;
+
+  var header = root.querySelector('.site-header');
+  if (header) {
+    var onScroll = function () {
+      if (window.scrollY > 40) header.classList.add('scrolled');
+      else header.classList.remove('scrolled');
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
+  var toggle = root.querySelector('.nav-toggle');
+  var links = root.querySelector('.nav-links');
+  if (toggle && links) {
+    toggle.addEventListener('click', function () {
+      var open = links.classList.toggle('nav-open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    links.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        links.classList.remove('nav-open');
+        toggle.setAttribute('aria-expanded', 'false');
       });
-      links.querySelectorAll('a').forEach(function (a) {
-        a.addEventListener('click', function () {
-          links.classList.remove('nav-open');
-          toggle.setAttribute('aria-expanded', 'false');
-        });
-      });
+    });
+  }
+
+  var emberBox = root.querySelector('.embers');
+  if (emberBox && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    for (var i = 0; i < 18; i++) {
+      var s = document.createElement('span');
+      s.style.left = (Math.random() * 100) + '%';
+      s.style.animationDuration = (5 + Math.random() * 6) + 's';
+      s.style.animationDelay = (Math.random() * 6) + 's';
+      s.style.opacity = (0.4 + Math.random() * 0.5).toFixed(2);
+      emberBox.appendChild(s);
     }
+  }
 
-    // Floating ember particles in hero
-    var emberBox = root.querySelector('.embers');
-    if (emberBox && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      for (var i = 0; i < 18; i++) {
-        var s = document.createElement('span');
-        s.style.left = (Math.random() * 100) + '%';
-        s.style.animationDuration = (5 + Math.random() * 6) + 's';
-        s.style.animationDelay = (Math.random() * 6) + 's';
-        s.style.opacity = (0.4 + Math.random() * 0.5).toFixed(2);
-        emberBox.appendChild(s);
-      }
-    }
+  var form = root.querySelector('.reservation-form');
+  var confirmation = root.querySelector('.reservation-confirmation');
+  if (form && confirmation) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+      var data = new FormData(form);
+      var name = data.get('name'), email = data.get('email'), phone = data.get('phone'),
+          date = data.get('date'), time = data.get('time'), party = data.get('party'), notes = data.get('notes');
+      var submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending\u2026'; }
 
-    // ------------------------------------------------------------------
-    // EDIT: RESERVATION FORM — how it currently behaves, and how to wire
-    // it up to something real (email / booking software):
-    //
-    //   Right now, submitting only shows an on-screen confirmation message.
-    //   To actually receive these requests, pick ONE of:
-    //     1. Sign up at a free form backend (e.g. Formspree, Getform), then
-    //        change the <form class="reservation-form"> tag above to include
-    //        action="https://formspree.io/f/your-id" method="POST" and
-    //        remove/relax the e.preventDefault() logic below.
-    //     2. Point this at your own server / serverless function that
-    //        emails you or writes to a booking system.
-    //     3. Replace this whole form with an embed from OpenTable, Resy,
-    //        or similar, if you already use one of those.
-    // ------------------------------------------------------------------
-    var form = root.querySelector('.reservation-form');
-    var confirmation = root.querySelector('.reservation-confirmation');
-    if (form && confirmation) {
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        if (!form.checkValidity()) { form.reportValidity(); return; }
-        var data = new FormData(form);
-        var name = data.get('name'), email = data.get('email'), phone = data.get('phone'),
-            date = data.get('date'), time = data.get('time'), party = data.get('party'), notes = data.get('notes');
-
-        var submitBtn = form.querySelector('button[type="submit"]');
-        if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending…'; }
-
-        fetch('/api/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: name, email: email, phone: phone, date: date, time: time, guests: party, notes: notes })
-        })
-        .then(function(res) { return res.json(); })
-        .then(function(result) {
-          if (result.error) {
-            throw new Error(result.error);
+      fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name, email: email, phone: phone, date: date, time: time, guests: party, notes: notes })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(result) {
+        if (result.error) { throw new Error(result.error); }
+        form.hidden = true; confirmation.hidden = false;
+        confirmation.innerHTML =
+          '<h3>Request received, ' + escapeHtml(name) + '!</h3>' +
+          '<p>Reservation ID: <strong>' + escapeHtml(result.id || '') + '</strong></p>' +
+          '<p>We\'ve noted a table for ' + escapeHtml(party) + ' on ' + escapeHtml(date) + ' at ' + escapeHtml(time) + '.</p>' +
+          '<p style="margin-top:16px;"><a href="https://fizzybutterchicken.vercel.app/card-viewer.html?id=' + encodeURIComponent(result.id) + '" target="_blank" style="display:inline-block;padding:10px 18px;background:#C89B3C;color:#14100D;font-weight:bold;border-radius:2px;">View Reservation Pass &#8594;</a></p>';
+      })
+      .catch(function(err) {
+        console.warn('API register error, client fallback:', err);
+        var sb = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+        var fid = 'RES-' + Math.floor(100000 + Math.random() * 900000);
+        sb.from('reservations').insert([{
+          id: fid, name: name, email: email, phone: phone,
+          reservation_date: date, reservation_time: time,
+          guests: isNaN(parseInt(party,10)) ? 1 : parseInt(party,10), notes: notes, status: 'pending'
+        }]).then(function(r) {
+          if (r.error) {
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Request Reservation'; }
+            alert('Sorry, something went wrong. Please call us instead.');
+            return;
           }
-          form.hidden = true;
-          confirmation.hidden = false;
+          form.hidden = true; confirmation.hidden = false;
           confirmation.innerHTML =
             '<h3>Request received, ' + escapeHtml(name) + '!</h3>' +
-            '<p>Reservation ID: <strong>' + escapeHtml(result.id || '') + '</strong></p>' +
-            '<p>We\'ve noted a table for ' + escapeHtml(party) + ' on ' + escapeHtml(date) +
-            ' at ' + escapeHtml(time) + '.</p>' +
-            '<p style="margin-top:16px;"><a href="https://fizzybutterchicken.vercel.app/card-viewer.html?id=' + encodeURIComponent(result.id) + '" target="_blank" style="display:inline-block; padding:10px 18px; background:#C89B3C; color:#14100D; font-weight:bold; border-radius:2px;">View Reservation Pass →</a></p>';
-        })
-        .catch(function(err) {
-          console.warn('API register error, attempting direct client fallback:', err);
-          var supabase = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
-          var fallbackId = 'RES-' + Math.floor(100000 + Math.random() * 900000);
-          supabase.from('reservations').insert([{
-            id: fallbackId, name: name, email: email, phone: phone,
-            reservation_date: date, reservation_time: time,
-            guests: isNaN(parseInt(party, 10)) ? 1 : parseInt(party, 10), notes: notes, status: 'pending'
-          }]).then(function(res) {
-            if (res.error) {
-              if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Request Reservation'; }
-              alert('Sorry, something went wrong sending your request. Please call us instead.');
-              return;
-            }
-            form.hidden = true;
-            confirmation.hidden = false;
-            confirmation.innerHTML =
-              '<h3>Request received, ' + escapeHtml(name) + '!</h3>' +
-              '<p>Reservation ID: <strong>' + escapeHtml(fallbackId) + '</strong></p>' +
-              '<p>We\'ve noted a table for ' + escapeHtml(party) + ' on ' + escapeHtml(date) +
-              ' at ' + escapeHtml(time) + '.</p>' +
-              '<p style="margin-top:16px;"><a href="https://fizzybutterchicken.vercel.app/card-viewer.html?id=' + encodeURIComponent(fallbackId) + '" target="_blank" style="display:inline-block; padding:10px 18px; background:#C89B3C; color:#14100D; font-weight:bold; border-radius:2px;">View Reservation Pass →</a></p>';
-          });
+            '<p>Reservation ID: <strong>' + escapeHtml(fid) + '</strong></p>' +
+            '<p>We\'ve noted a table for ' + escapeHtml(party) + ' on ' + escapeHtml(date) + ' at ' + escapeHtml(time) + '.</p>' +
+            '<p style="margin-top:16px;"><a href="https://fizzybutterchicken.vercel.app/card-viewer.html?id=' + encodeURIComponent(fid) + '" target="_blank" style="display:inline-block;padding:10px 18px;background:#C89B3C;color:#14100D;font-weight:bold;border-radius:2px;">View Reservation Pass &#8594;</a></p>';
         });
       });
-    }
-  }
-
-  function escapeHtml(str) {
-    return String(str || '').replace(/[&<>"']/g, function (c) {
-      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
     });
   }
+}
 
-  initSiteView(desktopView);
-  initSiteView(mobileView);
-});
+function escapeHtml(str) {
+  return String(str || '').replace(/[&<>"']/g, function (c) {
+    return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+  });
+}
 </script>
 </body>
 </html>
