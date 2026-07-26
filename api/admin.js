@@ -58,20 +58,40 @@ module.exports = async (req, res) => {
       const { id, adminName } = req.body || {};
       if (!id) return res.status(400).json({ error: 'Missing reservation id.' });
 
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('reservations')
         .update({
           status: 'approved',
           verified_by: adminName || 'admin',
           verified_at: new Date().toISOString()
         })
-        .eq('id', id);
+        .eq('id', id)
+        .select()
+        .single();
 
       if (error) {
         console.error(error);
         return res.status(500).json({ error: 'Could not approve reservation.' });
       }
-      return res.status(200).json({ ok: true });
+
+      // Trigger User Acceptance Email when Admin Approves
+      if (data && data.email) {
+        try {
+          const origin = req.headers.host ? `https://${req.headers.host}` : 'https://fizzybutterchicken.vercel.app';
+          await fetch(`${origin}/api/send-email`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: 'user_approval',
+              record: data
+            })
+          });
+        } catch (emailErr) {
+          console.warn('User approval email trigger notice:', emailErr.message);
+        }
+      }
+
+      return res.status(200).json({ ok: true, record: data });
     }
 
     if (action === 'reject' && req.method === 'POST') {

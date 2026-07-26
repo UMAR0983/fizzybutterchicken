@@ -286,8 +286,7 @@
             const data = Object.fromEntries(formData.entries());
 
             try {
-                // Step 1: Register reservation in Supabase
-                appendLog('> submitting reservation...');
+                appendLog('> submitting reservation request...');
                 const response = await fetch('/api/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -302,36 +301,11 @@
                     return;
                 }
 
-                appendLog('> reservation submitted.');
+                appendLog('> reservation request submitted successfully.');
                 appendLog('> reservation id: ' + result.id);
-                appendLog('> status: pending approval');
-
-                // Step 2: Send confirmation email
-                appendLog('> sending confirmation email to ' + data.email + '...');
-                try {
-                    const emailRes = await fetch('/api/send-email', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ name: data.name, email: data.email, reservationId: result.id })
-                    });
-                    const emailResult = await emailRes.json().catch(() => ({}));
-                    if (emailResult.simulated) {
-                        appendLog('> email simulated (set GMAIL_USER + GMAIL_APP_PASS in Vercel env vars).');
-                    } else if (emailRes.ok) {
-                        appendLog('> confirmation email sent to ' + data.email);
-                    } else {
-                        appendLog('> email notice: ' + (emailResult.error || 'could not send email.'));
-                    }
-                } catch (emailErr) {
-                    appendLog('> email skipped: ' + emailErr.message);
-                }
-
-                // Step 3: Show pass link
-                const passDiv = document.createElement('div');
-                passDiv.className = 'log-line';
-                passDiv.style.marginTop = '8px';
-                passDiv.innerHTML = '> pass link: <a href="https://fizzybutterchicken.vercel.app/card-viewer.html?id=' + encodeURIComponent(result.id) + '" target="_blank" style="color:var(--gold);text-decoration:underline;">View 3D Reservation Pass &#8594;</a>';
-                logConsole.appendChild(passDiv);
+                appendLog('> status: pending admin approval');
+                appendLog('> notification email sent to management (fizzybutterchicken@gmail.com).');
+                appendLog('> you will receive a confirmation email with your pass link once management accepts your reservation.');
 
                 reserveForm.querySelectorAll('input, select, textarea, button').forEach(el => el.disabled = true);
 
@@ -340,6 +314,8 @@
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'RETRY TRANSMISSION';
             }
+
+
         });
     </script>
 </body>
