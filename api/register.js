@@ -1,9 +1,10 @@
 // POST /api/register
 // Body: { name, email, phone, date, time, guests, notes }
 // Inserts a new reservation row into Supabase with 'pending' status.
-// Triggers an email notification to fizzybutterchicken@gmail.com with Admin Console link.
+// Directly triggers an email notification to fizzybutterchicken@gmail.com with Admin Console link.
 
 const { createClient } = require('@supabase/supabase-js');
+const { sendMailHelper } = require('./send-email');
 
 function getSupabaseClient() {
   const url = process.env.SUPABASE_URL || 'https://drntuchxgbxullltmhih.supabase.co';
@@ -71,28 +72,24 @@ module.exports = async (req, res) => {
       return res.status(500).json({ error: 'Could not save reservation to database: ' + error.message });
     }
 
-    // Trigger Admin Notification Email to fizzybutterchicken@gmail.com
+    // Direct Admin Notification Email to fizzybutterchicken@gmail.com via Nodemailer
     try {
-      const origin = req.headers.host ? `https://${req.headers.host}` : 'https://fizzybutterchicken.vercel.app';
-      await fetch(`${origin}/api/send-email`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'admin_notification',
-          record: {
-            id: data.id,
-            name: data.name,
-            email: data.email,
-            phone: data.phone,
-            reservation_date: data.reservation_date,
-            reservation_time: data.reservation_time,
-            guests: data.guests,
-            notes: data.notes
-          }
-        })
+      await sendMailHelper({
+        type: 'admin_notification',
+        record: {
+          id: data.id,
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          reservation_date: data.reservation_date,
+          reservation_time: data.reservation_time,
+          guests: data.guests,
+          notes: data.notes
+        }
       });
+      console.log('Admin notification email sent directly for ID:', data.id);
     } catch (emailErr) {
-      console.warn('Admin notification email fetch notice:', emailErr.message);
+      console.warn('Admin notification email direct send notice:', emailErr.message);
     }
 
     return res.status(200).json({

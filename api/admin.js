@@ -2,6 +2,7 @@
 // Auth: header "Authorization: Bearer <ADMIN_SECRET_KEY>"
 
 const { createClient } = require('@supabase/supabase-js');
+const { sendMailHelper } = require('./send-email');
 
 function getSupabaseClient() {
   const url = process.env.SUPABASE_URL || 'https://drntuchxgbxullltmhih.supabase.co';
@@ -74,20 +75,16 @@ module.exports = async (req, res) => {
         return res.status(500).json({ error: 'Could not approve reservation.' });
       }
 
-      // Trigger User Acceptance Email when Admin Approves
+      // Direct User Acceptance Email when Admin Approves
       if (data && data.email) {
         try {
-          const origin = req.headers.host ? `https://${req.headers.host}` : 'https://fizzybutterchicken.vercel.app';
-          await fetch(`${origin}/api/send-email`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              type: 'user_approval',
-              record: data
-            })
+          await sendMailHelper({
+            type: 'user_approval',
+            record: data
           });
+          console.log('User approval email sent directly to:', data.email);
         } catch (emailErr) {
-          console.warn('User approval email trigger notice:', emailErr.message);
+          console.warn('User approval email direct send notice:', emailErr.message);
         }
       }
 
