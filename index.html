@@ -493,7 +493,7 @@ footer .wrap{
             </ul>
         </nav>
 
-        <a href="#reservation-form" class="nav-cta">
+        <a href="reserve.html" class="nav-cta">
             Reserve
         </a>
 
@@ -526,7 +526,7 @@ footer .wrap{
     <h1>Feasts, Friends,<br>and Pure ghee.</h1>
     <p class="lead"> Hey yaar, let’s grab a bite! At Fizzy's, we don't do shortcuts. We bring you authentic Pakistani and Indian comfort food cooked exactly the way it was meant to be—over real, glowing oak embers. From our legendary, tandoor-charred Smoky Butter Chicken to our irresistible, cheese-stuffed Naan-Stop wraps, every bite is a celebration of rich spices, pure ghee, and slow-cooked perfection. Pull up a chair, order a hot cup of cardamom Masala Chai, and taste what happens when patience meets the flame.</p>
     <div style="display:flex; gap:18px; flex-wrap:wrap; margin-top:8px;">
-      <a href="#reservation-form" class="btn btn-solid">Reserve a Table</a>
+      <a href="reserve.html" class="btn btn-solid">Reserve a Table</a>
       <a href="#menu" class="btn btn-outline">View the Menu</a>
     </div>
   </div>
@@ -1338,51 +1338,14 @@ Whether you're sharing dinner with family, celebrating with friends, or simply c
            This form currently only shows an on-screen confirmation (see the
            JavaScript "Reservation form" section near the bottom of this file
            for how to connect it to email or a booking service). -->
-      <form id="reservation-form" class="reservation-form" novalidate="">
-        <div class="form-grid">
-          <div class="field full">
-            <label for="name">Full name</label>
-            <input type="text" id="name" name="name" required="" autocomplete="name">
-          </div>
-          <div class="field">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required="" autocomplete="email">
-          </div>
-          <div class="field">
-            <label for="phone">Phone</label>
-            <input type="tel" id="phone" name="phone" required="" autocomplete="tel">
-          </div>
-          <div class="field">
-            <label for="date">Date</label>
-            <input type="date" id="date" name="date" required="">
-          </div>
-          <div class="field">
-            <label for="time">Time</label>
-            <!-- EDIT: RESERVATION FORM — available times -->
-            <select id="time" name="time" required="">
-              <option value="">Select a time</option>
-              <option>5:00 PM</option><option>5:30 PM</option><option>6:00 PM</option>
-              <option>6:30 PM</option><option>7:00 PM</option><option>7:30 PM</option>
-              <option>8:00 PM</option><option>8:30 PM</option><option>9:00 PM</option><option>9:30 PM</option>
-            </select>
-          </div>
-          <div class="field full">
-            <label for="party">Party size</label>
-            <select id="party" name="party" required="">
-              <option value="">Select party size</option>
-              <option>1</option><option>2</option><option>3</option><option>4</option>
-              <option>5</option><option>6</option><option>7</option><option>8</option>
-              <option>9+ (please call us)</option>
-            </select>
-          </div>
-          <div class="field full">
-            <label for="notes">Notes (allergies, occasions, seating requests)</label>
-            <textarea id="notes" name="notes"></textarea>
-          </div>
-        </div>
-        <button type="submit" class="btn btn-solid">Request Reservation</button>
-      </form>
-      <div id="reservation-confirmation" class="reservation-confirmation" hidden=""></div>
+      <div style="background:var(--surface); border:1px solid var(--line); padding:40px; border-radius:4px;">
+        <p style="color:var(--ivory-dim); margin-bottom:24px; font-size:1.05rem; line-height:1.6;">
+          Join us for lunch or dinner. Book your table online and get an instant digital reservation pass.
+        </p>
+        <a href="reserve.html" class="btn btn-solid" style="display:inline-block; padding:16px 32px; font-size:13px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; text-decoration:none;">
+          Reserve Seats Page &rarr;
+        </a>
+      </div>
     </div>
 
     <!-- Contact Information -->
