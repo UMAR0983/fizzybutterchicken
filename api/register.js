@@ -72,7 +72,7 @@ module.exports = async (req, res) => {
       ok: true,
       id: data.id,
       status: data.status,
-      passUrl: `https://fizzybutterchicken.vercel.app/card-viewer.html?id=${data.id}`
+      passUrl: `https://fuzzybutterchicken.vercel.app/card-viewer.html?id=${data.id}`
     });
   } catch (err) {
     console.error('register.js error:', err);

@@ -59,7 +59,7 @@ module.exports = async (req, res) => {
           <p>You've been checked in at Fizzy's Butter Chicken. Your table will be ready shortly.</p>
           <p>Thanks for dining with us tonight.</p>
           <hr style="border:none; border-top:1px solid #4A4038; margin:20px 0;" />
-          <p style="color:#B9AF9F; font-size:12px; margin:0;">Fizzy's Butter Chicken · 36 James Street, Parry Sound, Ontario · <a href="https://fizzybutterchicken.vercel.app" style="color:#C89B3C; text-decoration:none;">fizzybutterchicken.vercel.app</a></p>
+          <p style="color:#B9AF9F; font-size:12px; margin:0;">Fizzy's Butter Chicken · 36 James Street, Parry Sound, Ontario · <a href="https://fuzzybutterchicken.vercel.app" style="color:#C89B3C; text-decoration:none;">fuzzybutterchicken.vercel.app</a></p>
         </div>
       `
     };
