@@ -1,7 +1,7 @@
 // POST /api/send-email
 // Body: { type, name, email, record }
 // Handles:
-// 1. 'admin_notification': Sent to fizzybutterchicken@gmail.com when a new reservation is requested, containing Admin Console login link.
+// 1. 'admin_notification': Sent to restaurant management (fizzybutterchicken@gmail.com, umarkhatabmalik2156@gmail.com, zakiulhassan105@gmail.com) with Admin Console login link.
 // 2. 'user_approval' / 'confirmation': Sent to guest's email when admin approves the reservation, containing Digital Pass link.
 // 3. 'checkin': Sent to guest when staff checks them in.
 
@@ -32,21 +32,20 @@ module.exports = async (req, res) => {
     const { type, name, email, record } = req.body || {};
     const recordData = record || {};
 
-    const recipientEmail = type === 'admin_notification'
-      ? 'fizzybutterchicken@gmail.com'
-      : (email || recordData.email);
-
-    if (!recipientEmail) return res.status(400).json({ error: 'Missing recipient email.' });
+    const primaryRecipient = email || recordData.email;
+    if (!primaryRecipient && type !== 'admin_notification') {
+      return res.status(400).json({ error: 'Missing recipient email.' });
+    }
 
     const smtpUser = process.env.GMAIL_USER || process.env.SMTP_USER;
     const smtpPass = process.env.GMAIL_APP_PASS || process.env.SMTP_PASS;
 
     if (!smtpUser || !smtpPass) {
-      console.warn('SMTP credentials missing in Vercel. Email notification simulated for:', recipientEmail);
+      console.warn('SMTP credentials missing in Vercel. Email notification simulated for:', primaryRecipient || 'admin');
       return res.status(200).json({
         ok: true,
         simulated: true,
-        message: 'SMTP credentials missing in Vercel env vars. Email simulated.'
+        message: 'SMTP credentials missing in Vercel env vars (GMAIL_USER / GMAIL_APP_PASS). Email simulated.'
       });
     }
 
@@ -77,11 +76,16 @@ module.exports = async (req, res) => {
 
     let subject = '';
     let html = '';
+    let toField = primaryRecipient;
+    let bccField = undefined;
     const reservationId = recordData.id || '';
     const passUrl = `https://fizzybutterchicken.vercel.app/card-viewer.html?id=${encodeURIComponent(reservationId)}`;
     const adminConsoleUrl = `https://fizzybutterchicken.vercel.app/admin.html`;
 
     if (type === 'admin_notification') {
+      toField = primaryRecipient || 'fizzybutterchicken@gmail.com';
+      // Include all admin notification emails so management gets instant alerts
+      bccField = ['fizzybutterchicken@gmail.com', 'umarkhatabmalik2156@gmail.com', 'zakiulhassan105@gmail.com'];
       subject = `🔔 New Reservation Request — ${recordData.name || 'Guest'} (${recordData.guests || 1} Guests)`;
       html = `
         <div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width:560px; margin:0 auto; padding:24px; border:1px solid #C89B3C; background-color:#14100D; color:#EDE6DA; border-radius:6px;">
@@ -105,7 +109,7 @@ module.exports = async (req, res) => {
         </div>
       `;
     } else if (type === 'checkin') {
-      subject = ` You're checked in — Fizzy's Butter Chicken`;
+      subject = `✓ You're checked in — Fizzy's Butter Chicken`;
       html = `
         <div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width:520px; margin:0 auto; padding:24px; border:1px solid #4A4038; background-color:#14100D; color:#EDE6DA; border-radius:6px;">
           <h2 style="color:#C89B3C; margin-top:0; font-weight:500;">Welcome in, ${name || recordData.name || 'guest'}!</h2>
@@ -117,6 +121,7 @@ module.exports = async (req, res) => {
       `;
     } else {
       // Default: 'user_approval' / 'confirmation'
+      bccField = ['fizzybutterchicken@gmail.com', 'umarkhatabmalik2156@gmail.com', 'zakiulhassan105@gmail.com'];
       subject = `🎉 Reservation Accepted — Fizzy's Butter Chicken`;
       html = `
         <div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width:540px; margin:0 auto; padding:24px; border:1px solid #4A4038; background-color:#14100D; color:#EDE6DA; border-radius:6px;">
@@ -138,20 +143,19 @@ module.exports = async (req, res) => {
 
     const mailOptions = {
       from: `"Fizzy's Butter Chicken" <${smtpUser}>`,
-      to: recipientEmail,
+      to: toField,
       subject: subject,
       html: html
     };
 
-    // If sending to user, BCC restaurant admin as well
-    if (type !== 'admin_notification') {
-      mailOptions.bcc = 'fizzybutterchicken@gmail.com';
+    if (bccField) {
+      mailOptions.bcc = bccField;
     }
 
     try {
       await transporter.sendMail(mailOptions);
-      console.log('SMTP email successfully sent to:', recipientEmail);
-      return res.status(200).json({ ok: true });
+      console.log('SMTP email successfully sent to:', toField);
+      return res.status(200).json({ ok: true, recipient: toField });
     } catch (sendErr) {
       console.warn('SMTP send notice:', sendErr.message);
       return res.status(200).json({
