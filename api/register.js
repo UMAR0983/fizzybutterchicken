@@ -1,6 +1,6 @@
 // POST /api/register
 // Body: { name, email, phone, date, time, guests, notes }
-// Inserts a new reservation row into Supabase with status "pending".
+// Inserts a new reservation row into Supabase with auto-approved status.
 
 const { createClient } = require('@supabase/supabase-js');
 
@@ -58,7 +58,9 @@ module.exports = async (req, res) => {
         reservation_time: time,
         guests: numGuests,
         notes: notes || null,
-        status: 'pending'
+        status: 'approved',
+        verified_by: 'Auto-System',
+        verified_at: new Date().toISOString()
       }])
       .select()
       .single();
