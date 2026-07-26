@@ -1,7 +1,7 @@
 // POST /api/send-email
 // Body: { type, name, email, record }
 // Handles:
-// 1. 'admin_notification': Sent to restaurant management (fizzybutterchicken@gmail.com, umarkhatabmalik2156@gmail.com, zakiulhassan105@gmail.com) with Admin Console login link.
+// 1. 'admin_notification': Sent to restaurant management (fizzybutterchicken@gmail.com) with Admin Console login link.
 // 2. 'user_approval' / 'confirmation': Sent to guest's email when admin approves the reservation, containing Digital Pass link.
 // 3. 'checkin': Sent to guest when staff checks them in.
 
@@ -37,42 +37,25 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Missing recipient email.' });
     }
 
-    const smtpUser = process.env.GMAIL_USER || process.env.SMTP_USER;
+    const smtpUser = process.env.GMAIL_USER || process.env.SMTP_USER || 'fizzybutterchicken@gmail.com';
     const smtpPass = process.env.GMAIL_APP_PASS || process.env.SMTP_PASS;
 
-    if (!smtpUser || !smtpPass) {
+    if (!smtpPass) {
       console.warn('SMTP credentials missing in Vercel. Email notification simulated for:', primaryRecipient || 'admin');
       return res.status(200).json({
         ok: true,
         simulated: true,
-        message: 'SMTP credentials missing in Vercel env vars (GMAIL_USER / GMAIL_APP_PASS). Email simulated.'
+        message: 'SMTP credentials missing in Vercel env vars. Email simulated.'
       });
     }
 
-    // Auto-detect SMTP transport based on user domain
-    let transporter;
-    const lowerUser = smtpUser.toLowerCase();
-
-    if (lowerUser.endsWith('@outlook.com') || lowerUser.endsWith('@hotmail.com') || lowerUser.endsWith('@live.com')) {
-      transporter = nodemailer.createTransport({
-        host: 'smtp-mail.outlook.com',
-        port: 587,
-        secure: false,
-        auth: {
-          user: smtpUser,
-          pass: smtpPass
-        },
-        tls: { ciphers: 'SSLv3' }
-      });
-    } else {
-      transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: smtpUser,
-          pass: smtpPass
-        }
-      });
-    }
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: smtpUser,
+        pass: smtpPass
+      }
+    });
 
     let subject = '';
     let html = '';
@@ -83,9 +66,7 @@ module.exports = async (req, res) => {
     const adminConsoleUrl = `https://fizzybutterchicken.vercel.app/admin.html`;
 
     if (type === 'admin_notification') {
-      toField = primaryRecipient || 'fizzybutterchicken@gmail.com';
-      // Include all admin notification emails so management gets instant alerts
-      bccField = ['fizzybutterchicken@gmail.com', 'umarkhatabmalik2156@gmail.com', 'zakiulhassan105@gmail.com'];
+      toField = 'fizzybutterchicken@gmail.com';
       subject = `🔔 New Reservation Request — ${recordData.name || 'Guest'} (${recordData.guests || 1} Guests)`;
       html = `
         <div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width:560px; margin:0 auto; padding:24px; border:1px solid #C89B3C; background-color:#14100D; color:#EDE6DA; border-radius:6px;">
@@ -121,7 +102,7 @@ module.exports = async (req, res) => {
       `;
     } else {
       // Default: 'user_approval' / 'confirmation'
-      bccField = ['fizzybutterchicken@gmail.com', 'umarkhatabmalik2156@gmail.com', 'zakiulhassan105@gmail.com'];
+      bccField = 'fizzybutterchicken@gmail.com';
       subject = `🎉 Reservation Accepted — Fizzy's Butter Chicken`;
       html = `
         <div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width:540px; margin:0 auto; padding:24px; border:1px solid #4A4038; background-color:#14100D; color:#EDE6DA; border-radius:6px;">
