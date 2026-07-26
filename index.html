@@ -657,7 +657,7 @@ Whether you're sharing dinner with family, celebrating with friends, or simply c
   </div>
 </section>
 
-&lt;<!-- ============ MENU ============ -->
+<!-- ============ MENU ============ -->
 <section class="section" id="menu">
   <div class="wrap">
 
@@ -1329,10 +1329,11 @@ Whether you're sharing dinner with family, celebrating with friends, or simply c
 
 <!-- ============ CONTACT / RESERVATION / FIND US ============ -->
 <section class="section" id="contact">
-  <div class="wrap" style="display:grid; grid-template-columns:1.3fr 1fr; gap:64px; align-items:start;">
+  <div class="wrap grid-2" style="align-items:start;">
     <div>
       <span class="eyebrow">Reservations</span>
       <h2 style="font-size:1.7rem; margin-bottom:28px;">Request a table</h2>
+
 
       <!-- EDIT: RESERVATION FORM — add/remove fields by copying a .field block.
            This form currently only shows an on-screen confirmation (see the
@@ -1399,7 +1400,7 @@ Whether you're sharing dinner with family, celebrating with friends, or simply c
       </div>
 
       <div class="art-frame" style="aspect-ratio:4/3;overflow:hidden;border:1px solid var(--line);border-radius:8px;">
-        <iframe src="./memuna-landing_files/maps.html" width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" loading="lazy" allowfullscreen="">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2836.7865203770427!2d-80.03816672346764!3d45.34383397107246!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4d2b2609ebbbd0bb%3A0x6b43d3b769adbc!2s36%20James%20St%2C%20Parry%20Sound%2C%20ON%20P2A%201T5%2C%20Canada!5e0!3m2!1sen!2sca!4v1700000000000!5m2!1sen!2sca" width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" loading="lazy" allowfullscreen="">
         </iframe>
       </div>
     </div>
@@ -1503,6 +1504,23 @@ document.addEventListener('DOMContentLoaded', function () {
       '<span>Reserve</span></a>';
   document.body.appendChild(stickyBar);
 
+  
+  // Call Dialog Handler
+  var modal = document.getElementById('callModal');
+  var closeBtn = document.getElementById('closeCallModal');
+  document.querySelectorAll('a[href^="tel:"]').forEach(function(el) {
+    el.addEventListener('click', function(e) {
+      if (window.innerWidth > 768 && modal) {
+        e.preventDefault();
+        modal.style.display = 'flex';
+      }
+    });
+  });
+  if (closeBtn && modal) {
+    closeBtn.addEventListener('click', function() { modal.style.display = 'none'; });
+    modal.addEventListener('click', function(e) { if (e.target === modal) modal.style.display = 'none'; });
+  }
+
   initSiteView(document);
 });
 
@@ -1547,5 +1565,21 @@ function initSiteView(root) {
   }
 }
 </script>
+
+<!-- Call Dialog Modal -->
+<div id="callModal" class="call-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); backdrop-filter:blur(6px); z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:var(--surface, #1C1713); border:1px solid var(--gold, #C89B3C); padding:36px; border-radius:8px; max-width:400px; width:90%; text-align:center; position:relative; box-shadow:0 20px 50px rgba(0,0,0,0.9); color:#EDE6DA;">
+    <button id="closeCallModal" style="position:absolute; top:12px; right:16px; background:none; border:none; color:#B9AF9F; font-size:26px; cursor:pointer; line-height:1;">&times;</button>
+    <div style="font-size:38px; margin-bottom:12px;">📞</div>
+    <h3 style="font-family:'Cinzel', serif; color:var(--gold, #C89B3C); margin-bottom:8px; font-size:1.4rem;">Call Fizzy's</h3>
+    <p style="color:#B9AF9F; margin-bottom:20px; font-size:0.9rem; line-height:1.5;">Speak directly with our team for takeout orders, catering, or reservations.</p>
+    <div style="background:#14100D; padding:16px; border-radius:6px; margin-bottom:24px; border:1px solid #362D26;">
+      <div style="font-size:1.35rem; font-weight:bold; color:#FFF; margin-bottom:4px;">(705) 746-0505</div>
+      <div style="font-size:0.8rem; color:#C89B3C;">Mon – Sun: 11:30 AM – 10:00 PM</div>
+    </div>
+    <a href="tel:+17057460505" class="btn btn-solid" style="display:block; width:100%; padding:14px; text-decoration:none; text-align:center; font-weight:bold; font-size:0.9rem; letter-spacing:0.1em; text-transform:uppercase; box-sizing:border-box;">Call Now &rarr;</a>
+  </div>
+</div>
+
 </body>
 </html>

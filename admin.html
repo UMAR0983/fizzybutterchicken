@@ -103,6 +103,15 @@
         .btn-reject:hover { background-color: var(--red-breach-bg); }
         .btn-card { background-color: transparent; color: var(--gold); border: 1px solid var(--line); flex: 1; }
         .btn-card:hover { border-color: var(--gold); }
+
+        @media (max-width: 900px) {
+            .console-body { grid-template-columns: 1fr; }
+            .right-panel { height: auto; min-height: 400px; }
+        }
+        @media (max-width: 600px) {
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .auth-box input { width: 100%; }
+        }
     </style>
 </head>
 <body>
