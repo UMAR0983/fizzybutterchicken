@@ -83,12 +83,7 @@ module.exports = async (req, res) => {
         </div>
       `;
 
-    const mailOptions = {
-      from: `"Fizzy's Butter Chicken" <${smtpUser}>`,
-      to: email,
-      subject: subject,
-      html: html
-    };
+
 
     await transporter.sendMail(mailOptions);
     console.log('Gmail SMTP email successfully sent to:', email);
