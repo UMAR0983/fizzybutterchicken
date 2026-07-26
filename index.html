@@ -348,8 +348,8 @@ footer .wrap{
 /* ==================================================================
    DESKTOP / MOBILE VIEW SWITCH
    ------------------------------------------------------------------
-   #desktop-view is the ORIGINAL layout, completely untouched.
-   #mobile-view is a JS-generated clone of it (see the script near
+   is the ORIGINAL layout, completely untouched.
+   is a JS-generated clone of it (see the script near
    the bottom of this file) with a handful of mobile-only tweaks
    layered on top via the .mobile-mode class below. Only one of the
    two is ever visible, based on screen width.
@@ -362,13 +362,13 @@ footer .wrap{
   .site-header { padding: 14px 0; }
   .site-header .wrap { flex-wrap: wrap; gap: 14px; }
   .brand { font-size: 1.15rem; }
-  .hero { padding: 140px 0 50px; }
-  .hero .wrap { padding: 0; }
-  .hero h1 { font-size: clamp(2rem, 8vw, 2.8rem); }
-  .hero p.lead { font-size: 1rem; max-width: none; }
-  .hero div[style*="display:flex"] { flex-direction: column; gap: 12px; }
-  .hero .btn { width: 100%; justify-content: center; }
-  .hero .btn + .btn { margin-top: 12px; }
+  .hero { padding: 130px 0 60px; text-align: left; }
+  .hero .wrap { padding: 0 20px; box-sizing: border-box; }
+  .hero h1 { font-size: clamp(2.1rem, 7.5vw, 3.2rem); line-height: 1.25; margin-bottom: 16px; word-break: break-word; }
+  .hero p.lead { font-size: 0.96rem; line-height: 1.65; max-width: 100%; color: var(--ivory-dim); margin-bottom: 24px; }
+  .hero div[style*="display:flex"] { flex-direction: column; width: 100%; gap: 12px; margin-top: 16px; }
+  .hero .btn { width: 100%; text-align: center; justify-content: center; box-sizing: border-box; }
+  .hero .btn + .btn { margin-top: 0; }
 
   .menu-item { flex-direction: column; align-items: flex-start; gap: 10px; }
   .menu-item .leader { display: none; }
@@ -382,34 +382,34 @@ footer .wrap{
 }
 
 @media (max-width:660px){
-  #desktop-view{ display:none; }
+  
   #mobile-view{ display:block; max-width:100vw; overflow-x:hidden; }
   html, body{ overflow-x:hidden; max-width:100%; }
 
-  #mobile-view *{ min-width:0; }
-  #mobile-view .menu-item .name{ white-space:normal; word-break:break-word; }
-  #mobile-view .menu-cat-head h3{ white-space:normal; word-break:break-word; }
-  #mobile-view .menu-cat-head{ flex-wrap:wrap; }
+  *{ min-width:0; }
+  .menu-item .name{ white-space:normal; word-break:break-word; }
+  .menu-cat-head h3{ white-space:normal; word-break:break-word; }
+  .menu-cat-head{ flex-wrap:wrap; }
   .nav-cta{ white-space:normal; }
 
-  #mobile-view .wrap { padding: 0 16px; }
+  .wrap { padding: 0 16px; }
   .hero { padding: 90px 0 60px; }
   .hero h1 { font-size: clamp(1.7rem, 9vw, 2.1rem); }
   .hero p.lead { font-size: .98rem; line-height: 1.5; }
-  #mobile-view .section { padding: 40px 0; }
-  #mobile-view .section-tight { padding: 32px 0; }
+  .section { padding: 40px 0; }
+  .section-tight { padding: 32px 0; }
 
   .menu-list {
     margin-bottom: 14px;
     border-bottom: 1px solid var(--line);
   }
-  #mobile-view .menu-cat-head {
+  .menu-cat-head {
     cursor: pointer;
     padding: 14px 0;
     position: relative;
   }
-  #mobile-view .menu-cat-head .rule { display: none; }
-  #mobile-view .menu-cat-head::after {
+  .menu-cat-head .rule { display: none; }
+  .menu-cat-head::after {
     content: "+";
     position: absolute;
     right: 0;
@@ -420,7 +420,7 @@ footer .wrap{
   }
   .menu-list.open .menu-cat-head::after { content: "–"; }
 
-  #mobile-view .menu-items {
+  .menu-items {
     max-height: 0;
     overflow: hidden;
     transition: max-height .35s ease;
@@ -500,6 +500,14 @@ footer .wrap{
     background: var(--gold);
     color: var(--bg);
   }
+}
+
+
+@media (max-width: 480px) {
+  .hero { padding: 110px 0 45px; }
+  .hero .wrap { padding: 0 16px; }
+  .hero h1 { font-size: clamp(1.8rem, 8.5vw, 2.4rem); line-height: 1.2; }
+  .hero p.lead { font-size: 0.9rem; line-height: 1.55; margin-bottom: 20px; }
 }
 
 </style>
