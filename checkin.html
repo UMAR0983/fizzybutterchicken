@@ -303,31 +303,7 @@
             (checkedIn ? '✓ Checked In' : 'Check In') +
            '</button>' +
           '</div>' +
-        '</div>';
-      }).join('');
 
-      resultsEl.querySelectorAll('.btn-checkin:not(.done)').forEach(function (btn) {
-        btn.addEventListener('click', async function () {
-          btn.disabled = true;
-          btn.textContent = 'Processing…';
-
-          // Update status via API
-          try {
-            await fetch('/api/admin', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer admin123' },
-              body: JSON.stringify({ action: 'update_status', id: btn.dataset.id, status: 'checked_in' })
-            });
-          } catch (e) {}
-
-          // Also try Supabase client if available
-          if (supabase) {
-            try {
-              await supabase.from('reservations').update({ status: 'checked_in' }).eq('id', btn.dataset.id);
-            } catch (e) {}
-          }
-
-          // Send check-in email to guest
           await sendCheckinEmail(btn.dataset.name, btn.dataset.email);
 
           btn.textContent = '✓ Checked In';

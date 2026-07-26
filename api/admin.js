@@ -1,4 +1,4 @@
-// /api/admin?action=list|approve|reject
+// /api/admin?action=list|approve|reject|checkin|update_status
 // Auth: header "Authorization: Bearer <ADMIN_SECRET_KEY>"
 
 const { createClient } = require('@supabase/supabase-js');
@@ -90,6 +90,25 @@ module.exports = async (req, res) => {
       if (error) {
         console.error(error);
         return res.status(500).json({ error: 'Could not reject reservation.' });
+      }
+      return res.status(200).json({ ok: true });
+    }
+
+    if ((action === 'checkin' || action === 'update_status') && req.method === 'POST') {
+      const { id, status } = req.body || {};
+      if (!id) return res.status(400).json({ error: 'Missing reservation id.' });
+
+      const { error } = await supabase
+        .from('reservations')
+        .update({
+          status: status || 'checked_in',
+          verified_at: new Date().toISOString()
+        })
+        .eq('id', id);
+
+      if (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Could not update reservation status.' });
       }
       return res.status(200).json({ ok: true });
     }
