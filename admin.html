@@ -210,15 +210,19 @@
                             <div class="meta-item">
                                 <span class="meta-label">Remarks</span>
                                 <span class="meta-value" id="detailRemarks">--</span>
-                            </div>
+</div>
                         </div>
                     </div>
 
                     <div class="actions-box" id="actionsBox">
-                        <button class="btn-reject" onclick="rejectRecord()">Reject</button>
-                        <button class="btn-approve" onclick="approveRecord()">Approve</button>
+                        <button class="btn-card" id="btnViewCard" onclick="viewCard()">View Pass</button>
+                        <button class="btn-reject" id="btnReject" onclick="rejectRecord()">Reject</button>
+                        <button class="btn-approve" id="btnApprove" onclick="approveRecord()">Approve</button>
                     </div>
-
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         let allRecords = [];
@@ -226,7 +230,6 @@
         let selectedRecord = null;
 
         function escHtml(unsafe) {
-            if (unsafe == null) return '';
             return String(unsafe)
                  .replace(/&/g, "&amp;")
                  .replace(/</g, "&lt;")

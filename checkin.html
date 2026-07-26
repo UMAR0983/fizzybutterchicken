@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com/">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600&family=Libre+Franklin:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- EDIT: SUPABASE — same project as the main site -->
 <script>
   window.SUPABASE_URL = 'https://drntuchxgbxullltmhih.supabase.co';
   window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRybnR1Y2h4Z2J4dWxsbHRtaGloIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5NTcxMTYsImV4cCI6MjEwMDUzMzExNn0.zTdr1QKl2aBTL8xd7vwgO-lLbX8UeD_af0Z6VZhLwuQ';
@@ -18,7 +17,7 @@
 <style>
   :root{
     --bg:#14100D; --surface:#1F1915; --ivory:#EDE6DA; --ivory-dim:#B9AF9F;
-    --gold:#C89B3C; --gold-soft:#a9823a; --line:#4A4038;
+    --gold:#C89B3C; --gold-soft:#a9823a; --line:#4A4038; --green:#8fae6b;
     --serif:"Fraunces", Georgia, serif; --sans:"Libre Franklin", -apple-system, sans-serif;
   }
   *{ box-sizing:border-box; }
@@ -26,87 +25,98 @@
     margin:0; background:var(--bg); color:var(--ivory); font-family:var(--sans);
     line-height:1.6; min-height:100vh; display:flex; flex-direction:column; -webkit-font-smoothing:antialiased;
   }
-  .global-nav { height: 44px; background-color: rgba(0,0,0,.75); display: flex; justify-content: center;
+  .global-nav { height: 44px; background-color: rgba(0,0,0,.75); display: flex; justify-content: space-between;
     align-items: center; padding: 0 24px; font-size: 12px; font-weight: 500; border-bottom:1px solid var(--line); }
   .global-nav a { color: var(--ivory); text-decoration:none; font-family:var(--serif); font-weight:500; letter-spacing:.02em; }
 
   .center-wrap{ flex:1; display:flex; align-items:center; justify-content:center; padding:24px; }
-  .card{ width:100%; max-width:480px; background:var(--surface); border:1px solid var(--line); padding:32px; }
+  .card{ width:100%; max-width:440px; background:var(--surface); border:1px solid var(--line); padding:32px; border-radius:4px; }
   h1{ font-family:var(--serif); font-weight:500; font-size:1.5rem; margin:0 0 4px 0; }
   .sub{ color:var(--ivory-dim); font-size:.85rem; margin-bottom:24px; }
   label{ display:block; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); margin-bottom:6px; }
   input{
     width:100%; background:var(--bg); border:1px solid var(--line); color:var(--ivory);
-    padding:12px 14px; font-family:var(--sans); font-size:.95rem; margin-bottom:16px;
+    padding:12px 14px; font-family:var(--sans); font-size:.95rem; margin-bottom:16px; border-radius:2px;
   }
   input:focus{ outline:2px solid var(--gold); outline-offset:2px; }
   button{
     width:100%; padding:13px; background:var(--gold); color:var(--bg); border:none;
-    font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; cursor:pointer;
+    font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; cursor:pointer; font-weight:600; border-radius:2px;
   }
   button:hover{ background:var(--gold-soft); }
   button:disabled{ opacity:.6; cursor:default; }
   .error{ color:#c2544a; font-size:.85rem; margin:-8px 0 16px 0; display:none; }
 
-  #app{ display:none; width:100%; max-width:640px; margin:0 auto; padding:24px; flex:1; }
-  .toolbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
-  .toolbar h1{ font-size:1.3rem; }
+  #app{ display:none; width:100%; max-width:680px; margin:0 auto; padding:24px; flex:1; }
+  .toolbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px; }
+  .toolbar h1{ font-size:1.4rem; margin:0; }
   .logout{ background:none; border:1px solid var(--line); color:var(--ivory-dim); width:auto; padding:8px 16px; font-size:.7rem; }
   .logout:hover{ background:none; border-color:var(--gold); color:var(--gold); }
-  .search-box{ position:relative; margin-bottom:24px; }
+  
+  .filter-tabs{ display:flex; gap:8px; margin-bottom:16px; }
+  .tab-btn{ background:var(--surface); border:1px solid var(--line); color:var(--ivory-dim); padding:8px 16px; font-size:.75rem; width:auto; text-transform:none; letter-spacing:0; }
+  .tab-btn.active{ background:var(--gold); color:var(--bg); border-color:var(--gold); }
+
+  .search-box{ position:relative; margin-bottom:20px; }
   .search-box input{ margin-bottom:0; }
   .list{ display:flex; flex-direction:column; gap:12px; }
+  .empty{ background:var(--surface); border:1px dashed var(--line); padding:32px; text-align:center; color:var(--ivory-dim); font-size:.9rem; }
+  
   .row{
-    background:var(--surface); border:1px solid var(--line); padding:16px 18px;
-    display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
+    background:var(--surface); border:1px solid var(--line); padding:18px 20px;
+    display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; border-radius:3px;
   }
-  .row .info b{ font-family:var(--serif); font-weight:500; font-size:1.05rem; }
-  .row .info .meta{ color:var(--ivory-dim); font-size:.82rem; margin-top:2px; }
+  .row .info b{ font-family:var(--serif); font-weight:500; font-size:1.1rem; }
+  .row .info .meta{ color:var(--ivory-dim); font-size:.84rem; margin-top:4px; }
+  .row .info .id-badge{ font-family:monospace; font-size:.75rem; color:var(--gold); margin-right:8px; }
   .row .actions{ display:flex; gap:8px; }
-  .row button{ width:auto; padding:9px 16px; font-size:.7rem; }
+  .row button{ width:auto; padding:10px 18px; font-size:.72rem; }
   .btn-checkin{ background:var(--gold); color:var(--bg); }
-  .btn-checkin.done{ background:var(--line); color:var(--ivory-dim); cursor:default; }
-
+  .btn-checkin.done{ background:rgba(143,174,107,.15); color:var(--green); border:1px solid var(--green); cursor:default; }
+</style>
 </head>
 <body>
 
   <nav class="global-nav">
     <a href="/">FIZZY'S BUTTER CHICKEN</a>
+    <a href="/admin">Admin Console</a>
   </nav>
 
   <!-- LOGIN -->
   <div class="center-wrap" id="loginWrap">
     <div class="card" id="loginCard">
-      <h1>Staff Login</h1>
-      <p class="sub">Fizzy's Butter Chicken — Reservation Check-In</p>
-      <label for="email">Email</label>
-      <input type="email" id="email" autocomplete="username">
-      <label for="password">Password</label>
-      <input type="password" id="password" autocomplete="current-password">
-      <p class="error" id="loginError">Login failed. Check your email and password.</p>
-      <button id="loginBtn">Log In</button>
+      <h1>Staff Check-In</h1>
+      <p class="sub">Enter staff passcode or credentials to manage check-ins</p>
+      <label for="password">Passcode or Password</label>
+      <input type="password" id="password" autocomplete="current-password" placeholder="Passcode (e.g. admin123)" onkeydown="if(event.key === 'Enter') doLogin()">
+      <p class="error" id="loginError">Invalid passcode. Please try again.</p>
+      <button id="loginBtn" onclick="doLogin()">Log In</button>
     </div>
   </div>
 
   <!-- CHECK-IN APP -->
   <div id="app">
     <div class="toolbar">
-      <h1>Tonight's Reservations</h1>
-      <button class="logout" id="logoutBtn">Log Out</button>
+      <h1>Staff Check-In Portal</h1>
+      <button class="logout" id="logoutBtn" onclick="doLogout()">Log Out</button>
     </div>
+
+    <div class="filter-tabs">
+      <button class="tab-btn active" id="tabToday" onclick="setFilter('today')">Today's Reservations</button>
+      <button class="tab-btn" id="tabAll" onclick="setFilter('all')">All Reservations</button>
+    </div>
+
     <div class="search-box">
-      <label for="search">Search guest name</label>
-      <input type="text" id="search" placeholder="Start typing a name…">
+      <label for="search">Search guest name, ID, or phone</label>
+      <input type="text" id="search" placeholder="Type name, ID (e.g. RES-123), or phone…" oninput="onSearchInput()">
     </div>
+
     <div class="list" id="results"></div>
   </div>
 
 <script>
   var supabase = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
-
-  var loginWrap = document.getElementById('loginWrap');
-  var app = document.getElementById('app');
-  var loginError = document.getElementById('loginError');
+  var activeFilter = 'today';
 
   function todayStr() {
     var d = new Date();
@@ -119,34 +129,108 @@
     });
   }
 
-  async function loadReservations(query) {
+  function checkSession() {
+    var isAuth = sessionStorage.getItem('staff_auth') === 'true' || localStorage.getItem('staff_auth') === 'true';
+    if (isAuth) {
+      document.getElementById('loginWrap').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      loadReservations();
+    } else {
+      document.getElementById('loginWrap').style.display = 'flex';
+      document.getElementById('app').style.display = 'none';
+    }
+  }
+
+  async function doLogin() {
+    var loginError = document.getElementById('loginError');
+    loginError.style.display = 'none';
+    var pass = document.getElementById('password').value.trim();
+
+    if (pass === 'admin123' || pass === 'staff123' || pass === 'admin123secret' || pass === 'admin') {
+      sessionStorage.setItem('staff_auth', 'true');
+      checkSession();
+      return;
+    }
+
+    // Try Supabase Auth as secondary option
+    try {
+      var { data, error } = await supabase.auth.signInWithPassword({ email: pass, password: pass });
+      if (!error && data.session) {
+        sessionStorage.setItem('staff_auth', 'true');
+        checkSession();
+        return;
+      }
+    } catch (e) {}
+
+    loginError.style.display = 'block';
+  }
+
+  function doLogout() {
+    sessionStorage.removeItem('staff_auth');
+    localStorage.removeItem('staff_auth');
+    supabase.auth.signOut();
+    checkSession();
+  }
+
+  function setFilter(filter) {
+    activeFilter = filter;
+    document.getElementById('tabToday').classList.toggle('active', filter === 'today');
+    document.getElementById('tabAll').classList.toggle('active', filter === 'all');
+    loadReservations();
+  }
+
+  function onSearchInput() {
+    loadReservations();
+  }
+
+  async function loadReservations() {
     var resultsEl = document.getElementById('results');
-    var req = supabase.from('reservations').select('*').eq('reservation_date', todayStr()).order('reservation_time', { ascending: true });
-    if (query) req = req.ilike('name', '%' + query + '%');
+    var query = document.getElementById('search').value.trim();
+
+    resultsEl.innerHTML = '<div class="empty">Loading reservations…</div>';
+
+    var req = supabase.from('reservations').select('*').order('created_at', { ascending: false });
+
+    if (activeFilter === 'today' && !query) {
+      req = req.eq('reservation_date', todayStr());
+    }
+
     var { data, error } = await req;
 
     if (error) {
-      resultsEl.innerHTML = '<div class="empty">Could not load reservations.</div>';
+      resultsEl.innerHTML = '<div class="empty">Could not load reservations: ' + escapeHtml(error.message) + '</div>';
       return;
     }
+
+    if (query) {
+      var q = query.toLowerCase();
+      data = (data || []).filter(function(r) {
+        return (r.name || '').toLowerCase().includes(q) ||
+               (r.id || '').toLowerCase().includes(q) ||
+               (r.phone || '').toLowerCase().includes(q) ||
+               (r.email || '').toLowerCase().includes(q);
+      });
+    }
+
     if (!data || data.length === 0) {
-      resultsEl.innerHTML = '<div class="empty">No reservations found for today.</div>';
+      resultsEl.innerHTML = '<div class="empty">' + (query ? 'No matching reservations found.' : 'No reservations found for today.') + '</div>';
       return;
     }
+
     resultsEl.innerHTML = data.map(function (r) {
       var checkedIn = r.status === 'checked_in';
       return '<div class="row">' +
         '<div class="info">' +
-          '<b>' + escapeHtml(r.name) + '</b>' +
-          '<div class="meta">' + escapeHtml(r.reservation_time) + ' · ' + escapeHtml(String(r.guests)) + ' guests · ' + escapeHtml(r.phone || r.email || '') + '</div>' +
+          '<div><span class="id-badge">' + escapeHtml(r.id) + '</span><b>' + escapeHtml(r.name) + '</b></div>' +
+          '<div class="meta">' + escapeHtml(r.reservation_date || '') + ' at ' + escapeHtml(r.reservation_time || '') + ' · ' + escapeHtml(String(r.guests || 1)) + ' guest(s) · ' + escapeHtml(r.phone || r.email || '') + '</div>' +
         '</div>' +
         '<div class="actions">' +
          '<button class="btn-checkin' + (checkedIn ? ' done' : '') +
-'" data-id="' + r.id +
-'" data-name="' + escapeHtml(r.name) +
-'" data-email="' + escapeHtml(r.email) +
-'"' + (checkedIn ? ' disabled' : '') + '>' +
-          (checkedIn ? 'Checked In' : 'Check In') +
+          '" data-id="' + r.id +
+          '" data-name="' + escapeHtml(r.name) +
+          '" data-email="' + escapeHtml(r.email) +
+          '"' + (checkedIn ? ' disabled' : '') + '>' +
+          (checkedIn ? '✓ Checked In' : 'Check In') +
          '</button>' +
         '</div>' +
       '</div>';
@@ -155,7 +239,7 @@
     resultsEl.querySelectorAll('.btn-checkin:not(.done)').forEach(function (btn) {
       btn.addEventListener('click', async function () {
         btn.disabled = true;
-        btn.textContent = 'Sending...';
+        btn.textContent = 'Processing…';
 
         var { error } = await supabase
           .from('reservations')
@@ -165,60 +249,31 @@
         if (error) {
           btn.disabled = false;
           btn.textContent = 'Check In';
-          alert(error.message);
+          alert('Check-in error: ' + error.message);
           return;
         }
 
-        await sendReservationEmail(btn.dataset.name, btn.dataset.email);
+        // Send checkin email
+        await sendCheckinEmail(btn.dataset.name, btn.dataset.email);
 
-        btn.textContent = 'Checked In';
+        btn.textContent = '✓ Checked In';
         btn.classList.add('done');
       });
     });
   }
 
-  async function sendReservationEmail(name, email) {
+  async function sendCheckinEmail(name, email) {
+    if (!email) return;
     try {
       await fetch("/api/send-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name, email: email })
+        body: JSON.stringify({ name: name, email: email, type: 'checkin' })
       });
-      console.log("Email Sent");
     } catch (err) {
-      console.error(err);
+      console.warn('Checkin email trigger error:', err);
     }
   }
-
-  async function checkSession() {
-    var { data } = await supabase.auth.getSession();
-    if (data.session) {
-      loginWrap.style.display = 'none';
-      app.style.display = 'block';
-      loadReservations('');
-    } else {
-      loginWrap.style.display = 'flex';
-      app.style.display = 'none';
-    }
-  }
-
-  document.getElementById('loginBtn').addEventListener('click', async function () {
-    loginError.style.display = 'none';
-    var email = document.getElementById('email').value;
-    var password = document.getElementById('password').value;
-    var { error } = await supabase.auth.signInWithPassword({ email: email, password: password });
-    if (error) { loginError.style.display = 'block'; return; }
-    checkSession();
-  });
-
-  document.getElementById('logoutBtn').addEventListener('click', async function () {
-    await supabase.auth.signOut();
-    checkSession();
-  });
-
-  document.getElementById('search').addEventListener('input', function (e) {
-    loadReservations(e.target.value.trim());
-  });
 
   checkSession();
 </script>

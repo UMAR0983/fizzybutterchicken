@@ -1,6 +1,6 @@
 // POST /api/send-email
-// Body: { name, email }
-// Sends check-in confirmation email via Gmail SMTP using Nodemailer.
+// Body: { name, email, type, reservationId, date, time, party }
+// Sends reservation confirmation or check-in confirmation email via Gmail SMTP using Nodemailer.
 
 const nodemailer = require('nodemailer');
 
@@ -26,7 +26,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { name, email } = req.body || {};
+    const { name, email, type, reservationId, date, time, party } = req.body || {};
     if (!email) return res.status(400).json({ error: 'Missing recipient email.' });
 
     const smtpUser = process.env.GMAIL_USER || process.env.SMTP_USER;
@@ -37,7 +37,7 @@ module.exports = async (req, res) => {
       return res.status(200).json({
         ok: true,
         simulated: true,
-        message: 'Gmail credentials (GMAIL_USER / GMAIL_APP_PASS or SMTP_USER / SMTP_PASS) missing in Vercel. Email simulated.'
+        message: 'Gmail credentials (GMAIL_USER / GMAIL_APP_PASS) missing in Vercel. Email simulated.'
       });
     }
 
@@ -49,19 +49,45 @@ module.exports = async (req, res) => {
       }
     });
 
+    const isCheckin = type === 'checkin' || (!reservationId && !date);
+    const subject = isCheckin
+      ? `You're checked in — Fizzy's Butter Chicken`
+      : `Reservation Confirmed (${reservationId || 'Pass'}) — Fizzy's Butter Chicken`;
+
+    const passUrl = `https://fizzybutterchicken.vercel.app/card-viewer.html?id=${encodeURIComponent(reservationId || '')}`;
+
+    const html = isCheckin
+      ? `
+        <div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width:520px; margin:0 auto; padding:24px; border:1px solid #4A4038; background-color:#14100D; color:#EDE6DA; border-radius:6px;">
+          <h2 style="color:#C89B3C; margin-top:0; font-weight:500;">Welcome in, ${name ? name : 'guest'}!</h2>
+          <p>You've been checked in at Fizzy's Butter Chicken. Your table is ready.</p>
+          <p>Thank you for dining with us tonight!</p>
+          <hr style="border:none; border-top:1px solid #4A4038; margin:20px 0;" />
+          <p style="color:#B9AF9F; font-size:12px; margin:0;">Fizzy's Butter Chicken · 36 James Street, Parry Sound, Ontario · <a href="https://fizzybutterchicken.vercel.app" style="color:#C89B3C; text-decoration:none;">fizzybutterchicken.vercel.app</a></p>
+        </div>
+      `
+      : `
+        <div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width:520px; margin:0 auto; padding:24px; border:1px solid #4A4038; background-color:#14100D; color:#EDE6DA; border-radius:6px;">
+          <h2 style="color:#C89B3C; margin-top:0; font-weight:500;">Reservation Request Received!</h2>
+          <p>Hello ${name ? name : 'Guest'},</p>
+          <p>We've received your reservation request for <strong>Fizzy's Butter Chicken</strong>.</p>
+          <div style="background:#1F1915; border:1px solid #4A4038; padding:16px; border-radius:4px; margin:16px 0;">
+            <p style="margin:4px 0;"><strong>Reservation ID:</strong> <span style="color:#C89B3C; font-family:monospace;">${reservationId || 'Pending'}</span></p>
+            ${date ? `<p style="margin:4px 0;"><strong>Date:</strong> ${date}</p>` : ''}
+            ${time ? `<p style="margin:4px 0;"><strong>Time:</strong> ${time}</p>` : ''}
+            ${party ? `<p style="margin:4px 0;"><strong>Party Size:</strong> ${party} guest(s)</p>` : ''}
+          </div>
+          ${reservationId ? `<p style="margin-top:20px;"><a href="${passUrl}" target="_blank" style="display:inline-block; padding:12px 20px; background:#C89B3C; color:#14100D; font-weight:bold; border-radius:3px; text-decoration:none;">View Digital Reservation Pass →</a></p>` : ''}
+          <hr style="border:none; border-top:1px solid #4A4038; margin:20px 0;" />
+          <p style="color:#B9AF9F; font-size:12px; margin:0;">Fizzy's Butter Chicken · 36 James Street, Parry Sound, Ontario · (705) 746-0505</p>
+        </div>
+      `;
+
     const mailOptions = {
       from: `"Fizzy's Butter Chicken" <${smtpUser}>`,
       to: email,
-      subject: "You're checked in — Fizzy's Butter Chicken",
-      html: `
-        <div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width:520px; margin:0 auto; padding:24px; border:1px solid #4A4038; background-color:#14100D; color:#EDE6DA; border-radius:4px;">
-          <h2 style="color:#C89B3C; margin-top:0; font-weight:500;">Welcome in, ${name ? name : 'guest'}!</h2>
-          <p>You've been checked in at Fizzy's Butter Chicken. Your table will be ready shortly.</p>
-          <p>Thanks for dining with us tonight.</p>
-          <hr style="border:none; border-top:1px solid #4A4038; margin:20px 0;" />
-          <p style="color:#B9AF9F; font-size:12px; margin:0;">Fizzy's Butter Chicken · 36 James Street, Parry Sound, Ontario · <a href="https://fuzzybutterchicken.vercel.app" style="color:#C89B3C; text-decoration:none;">fuzzybutterchicken.vercel.app</a></p>
-        </div>
-      `
+      subject: subject,
+      html: html
     };
 
     await transporter.sendMail(mailOptions);
